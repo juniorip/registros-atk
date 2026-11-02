@@ -1,0 +1,88 @@
+import { logChange } from "@/lib/change-log";
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+import { requireApiUser } from "@/lib/api-auth";
+import { canValidateReferral, isAdmin, isManager, type VisibleStateReferral } from "@/lib/domain";
+import { isMonthClosedForRole, monthFromDate } from "@/lib/monthly-closure";
+import { prisma } from "@/lib/prisma";
+
+const decisionSchema = z.object({
+  action: z.enum(["validate", "reject"]),
+  reason: z.string().optional().nullable(),
+});
+
+const userSelect = {
+  id: true,
+  name: true,
+  username: true,
+  role: true,
+  sede: true,
+  forcePasswordReset: true,
+  color: true,
+} as const;
+
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  const auth = await requireApiUser();
+  if (auth.error) return auth.error;
+  if (!isAdmin(auth.user) && !isManager(auth.user)) {
+    return NextResponse.json({ error: "Solo los administradores y jefes autorizados pueden aprobar o rechazar referidos." }, { status: 403 });
+  }
+
+  const body = await request.json();
+  const parsed = decisionSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Acción inválida." }, { status: 400 });
+  }
+
+  const { id } = await context.params;
+  const referral = await prisma.referral.findUnique({
+    where: { id: Number(id) },
+    include: {
+      user: { select: userSelect },
+      validatedBy: { select: userSelect },
+    },
+  });
+
+  if (!referral || !canValidateReferral(auth.user, referral as VisibleStateReferral)) {
+    return NextResponse.json({ error: "No puedes decidir este referido." }, { status: 403 });
+  }
+  if (await isMonthClosedForRole(monthFromDate(referral.createdAt), auth.user.role)) {
+    return NextResponse.json({ error: "Este mes está cerrado. Reábrelo para validar o rechazar referidos." }, { status: 403 });
+  }
+
+  if (parsed.data.action === "validate") {
+    await prisma.referral.update({
+      where: { id: referral.id },
+      data: {
+        validatedAt: new Date(),
+        validatedById: auth.user.id,
+        rejectedAt: null,
+        rejectionReason: null,
+      },
+    });
+    await logChange({actorId:auth.user.id,module:"Referidos",action:String(parsed.data.action)==='reject'?'RECHAZAR':'APROBAR',summary:(String(parsed.data.action)==='reject'?'Rechazó':'Aprobó')+' Referidos #'+referral.id,targetType:'Referral',targetId:referral.id,sede:referral.historicalSede,before:referral,after:{decision:parsed.data.action,reason:parsed.data.reason||null}});
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!parsed.data.reason?.trim()) {
+    return NextResponse.json({ error: "Debes indicar el motivo del rechazo." }, { status: 400 });
+  }
+
+  await prisma.referral.update({
+    where: { id: referral.id },
+    data: {
+      rejectedAt: new Date(),
+      rejectionReason: parsed.data.reason.trim(),
+      validatedAt: null,
+      validatedById: null,
+    },
+  });
+
+  await logChange({actorId:auth.user.id,module:"Referidos",action:String(parsed.data.action)==='reject'?'RECHAZAR':'APROBAR',summary:(String(parsed.data.action)==='reject'?'Rechazó':'Aprobó')+' Referidos #'+referral.id,targetType:'Referral',targetId:referral.id,sede:referral.historicalSede,before:referral,after:{decision:parsed.data.action,reason:parsed.data.reason||null}});
+    return NextResponse.json({ ok: true });
+}
+

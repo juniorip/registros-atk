@@ -1,0 +1,33 @@
+# Dependencies and generated build output
+node_modules/
+.next/
+.vercel/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+docx_render_original/
+extracted_media/
+validation/
+
+# Local secrets and machine-specific configuration
+.env
+.env.*
+!.env.example
+
+# Local databases and data snapshots
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+/-
+LOCAL-PREVIEW.md
+src/data/
+src/lib/seed.ts
+scripts/test-local-preview.cjs
+
+# Temporary files and logs
+*.log
+*.tmp
+.npm-cache/
+.tmp_*

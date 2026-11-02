@@ -1,0 +1,17 @@
+const fs=require('node:fs'),ts=require('typescript'),vm=require('node:vm'),assert=require('node:assert/strict');
+const tree=ts.createSourceFile('app.js',fs.readFileSync('public/legacy-app.js','utf8'),99,true,1);
+const names=['exportSalaryReceiptPdf','exportIndividualReportPdf','salaryPersonToReportPerson'];
+let html='',requestedMonth='',alerts=0;
+const person={personId:'fixture',personName:'Colaborador de prueba',payrollRole:'Jefe de Sede',salaryMonthKey:'2026-10',monthlySalary:1700,salaryPay:1735.5,commissionsPay:250.75,estimatedSalary:1986.25,salaryPaid:true,salaryPaidAt:'2026-10-31T15:00:00Z',lateEntries:1,totalLateMinutes:10,totalLatePenalty:5,totalExtraMinutes:60,dayPayments:[{date:'2026-10-30',entryTime:'09:10',exitTime:'19:00',regularPay:1700,overtimePay:40.5,dailyPay:1735.5}],approvedRecords:[],approvedRatings:[],approvedReferrals:[]};
+const bundle=()=>({salaryPerson:{monthlySalary:1700,salaryPay:0,commissionsPay:0,estimatedSalary:0,dayPayments:[]},records:[],referrals:[],wrongCards:[],calls:[],penalties:[],ratings:[]});
+const c={state:{currentUser:{id:2,name:'Usuario prueba',role:'manager'},reportMonth:'2026-09'},salaryViewMonthKey:()=> '2026-10',userForAttendancePerson:()=>({id:2,name:'Colaborador de prueba',sede:'Norte',role:'manager'}),getPersonSede:()=> 'Norte',userSede:u=>u?.sede||'Norte',getReportPersonBundle:(p,month)=>{requestedMonth=month;return bundle()},appAlert:()=>{alerts++},reportMonthKey:()=> '2026-09',money:v=>'S/ '+Number(v||0).toFixed(2),minutesLabel:v=>v+' min',fmt:v=>v,fmtDateTime:v=>v,shortTime:v=>v||'-',attendanceStatusMeta:()=>({label:'Completo'}),earlyLeavePolicyLabel:()=> 'Salida anticipada',esc:v=>String(v??'').replaceAll('<','&lt;'),window:{open:()=>({document:{write:s=>{html=s},close:()=>{}}})}};
+vm.createContext(c);vm.runInContext(tree.statements.filter(n=>ts.isFunctionDeclaration(n)&&names.includes(n.name?.text)).map(n=>n.getText(tree)).join('\n'),c);
+c.exportSalaryReceiptPdf(person);
+assert.equal(requestedMonth,'2026-10','salary month, never manager Reports previous-month default');
+assert(html.includes('S/ 1735.50')&&html.includes('S/ 250.75')&&html.includes('S/ 1986.25'),'real paid snapshot totals survive a zero-valued report recalculation');
+assert(html.includes('2026-10-30')&&html.includes('09:10'),'attendance detail retained');
+assert(html.includes('Pagado 2026-10-31'),'payment status retained');
+html='';c.exportSalaryReceiptPdf({...person,salaryMonthKey:'2026-08'});assert.equal(requestedMonth,'2026-08','historical paid receipt keeps its own month');assert(html.includes('S/ 1986.25'));
+c.window.open=()=>null;c.exportSalaryReceiptPdf(person);assert.equal(alerts,1,'blocked popup reported instead of empty export');
+assert.equal(person.salaryPay,1735.5,'export never writes back payroll');
+console.log('PASS: selected and historical salary months, manager report-default mismatch, nonzero paid totals, attendance, paid status and popup failure. No payroll mutations.');

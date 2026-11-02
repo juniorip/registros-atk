@@ -1,0 +1,1938 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Altoque Peru WK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0a0d14; --bg2: #111520; --bg3: #181d2c; --bg4: #1e2436;
+  --card: #1a1f30; --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+  --text: #e8ecf4; --text2: #8b92a9; --text3: #555e75;
+  --accent: #4f8ef7; --accent2: #3d7aee;
+  --green: #22c97a; --amber: #f5a623; --red: #ef4444; --purple: #a78bfa; --teal: #2dd4bf;
+  --radius: 12px; --radius-sm: 8px;
+  --font: 'DM Sans', sans-serif; --font2: 'Space Grotesk', sans-serif;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+.login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+.login-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 380px; }
+.login-logo { position: relative; text-align: center; margin-bottom: 2rem; min-height: 88px; padding-top: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.login-logo .icon-wrap { display: none; }
+.login-logo .brand { position: relative; z-index: 2; margin-top: 0; font-family: var(--font2); font-size: 0; font-weight: 700; color: transparent; animation: logoFloat 4.4s ease-in-out infinite; }
+.login-logo .brand::before { content: 'A'; color: #ffcc00; font-size: 46px; font-weight: 800; letter-spacing: -3px; text-shadow: 0 0 10px rgba(255,204,0,0.82), 0 0 24px rgba(255,204,0,0.36); }
+.login-logo .brand::after { content: 'TK'; color: #fff; font-size: 46px; font-weight: 800; letter-spacing: -3px; text-shadow: 0 0 10px rgba(255,255,255,0.24), 0 0 20px rgba(255,255,255,0.11); }
+.login-logo .sub { position: relative; z-index: 2; margin-top: 1px; font-size: 0; color: transparent; animation: logoFloat 4.4s ease-in-out infinite; animation-delay: .12s; }
+.login-logo .sub::before { content: 'ALTOQUE PERU '; font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.2px; text-shadow: 0 0 6px rgba(255,255,255,0.12); }
+.login-logo .sub::after { content: 'WK'; font-size: 14px; font-weight: 700; color: #ffcc00; text-shadow: 0 0 8px rgba(255,204,0,0.68); }
+@keyframes borderFlow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+@keyframes shineMove { 0% { left: -250px; } 100% { left: 550px; } }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+.field input { width: 100%; padding: 10px 14px; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 14px; outline: none; transition: border 0.2s; }
+.field input:focus { border-color: var(--accent); }
+.password-field { position: relative; }
+.password-field input { padding-right: 48px; }
+.toggle-pass { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; color: var(--text2); font-size: 12px; font-weight: 600; cursor: pointer; }
+.toggle-pass:hover { color: var(--text); }
+.btn-primary { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: #fff; font-family: var(--font2); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-primary:hover { background: var(--accent2); }
+.login-hint { display: none; font-size: 11px; color: var(--text3); text-align: center; margin-top: 1.5rem; line-height: 1.8; }
+.login-hint strong { color: var(--text2); }
+.err-msg { font-size: 12px; color: var(--red); margin-bottom: 10px; display: none; }
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; min-width: 220px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem 0; }
+.sidebar-logo { position: relative; width: 152px; height: 56px; margin: 0 auto 1rem; border-bottom: none; background: transparent; overflow: visible; box-shadow: none; backdrop-filter: none; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.sidebar-logo::before, .sidebar-logo::after { display: none; }
+.sidebar-logo .brand { position: relative; z-index: 2; margin-top: 0; text-align: center; font-family: var(--font2); font-size: 0; color: transparent; animation: logoFloat 4.4s ease-in-out infinite; }
+.sidebar-logo .brand::before { content: 'A'; color: #ffcc00; font-size: 31px; font-weight: 800; letter-spacing: -2px; text-shadow: 0 0 9px rgba(255,204,0,0.84), 0 0 20px rgba(255,204,0,0.36); }
+.sidebar-logo .brand::after { content: 'TK'; color: #fff; font-size: 31px; font-weight: 800; letter-spacing: -2px; text-shadow: 0 0 8px rgba(255,255,255,0.24), 0 0 18px rgba(255,255,255,0.1); }
+.sidebar-logo .sub { position: relative; z-index: 2; margin-top: -1px; text-align: center; font-size: 0; color: transparent; animation: logoFloat 4.4s ease-in-out infinite; animation-delay: .12s; }
+.sidebar-logo .sub::before { content: 'ALTOQUE PERU '; font-size: 9px; font-weight: 700; color: #fff; letter-spacing: -0.1px; text-shadow: 0 0 5px rgba(255,255,255,0.12); }
+.sidebar-logo .sub::after { content: 'WK'; font-size: 9px; font-weight: 700; color: #ffcc00; text-shadow: 0 0 7px rgba(255,204,0,0.62); }
+@keyframes logoFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.25rem; cursor: pointer; color: var(--text2); font-size: 13px; font-weight: 500; transition: all 0.15s; position: relative; }
+.nav-item:hover { color: var(--text); background: var(--bg3); }
+.nav-item.active { color: var(--accent); background: rgba(79,142,247,0.1); }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); border-radius: 0 3px 3px 0; }
+.nav-icon { width: 20px; text-align: center; }
+.sidebar-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
+.user-badge { display: flex; align-items: center; gap: 10px; }
+.user-avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.user-name { font-size: 13px; font-weight: 500; }
+.user-role { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.logout-btn { font-size: 11px; color: var(--text3); cursor: pointer; margin-top: 8px; text-align: center; padding: 4px; border-radius: 4px; }
+.logout-btn:hover { color: var(--red); background: rgba(239,68,68,0.1); }
+.app-version { margin-top: 10px; text-align: center; font-size: 10px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; }
+.main { flex: 1; overflow-y: auto; padding: 2rem; }
+.page-header { margin-bottom: 1.5rem; }
+.page-title { font-family: var(--font2); font-size: 22px; font-weight: 700; }
+.page-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.hero-banner { position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(79,142,247,0.16), rgba(45,212,191,0.08) 48%, rgba(167,139,250,0.12)); border: 1px solid rgba(255,255,255,0.08); border-radius: 22px; padding: 1.5rem 1.6rem; margin-bottom: 1.5rem; }
+.hero-banner::before { content: ''; position: absolute; width: 220px; height: 220px; right: -70px; top: -110px; background: radial-gradient(circle, rgba(255,255,255,0.14), transparent 68%); pointer-events: none; }
+.hero-kicker { font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #b8c7ea; font-weight: 700; margin-bottom: 8px; }
+.hero-name { font-family: var(--font2); font-size: 34px; line-height: 1.02; font-weight: 700; max-width: 720px; }
+.hero-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.hero-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: rgba(9,13,20,0.35); font-size: 12px; color: var(--text); }
+.hero-chip-label { color: var(--text2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.stat-label { font-size: 11px; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 500; margin-bottom: 8px; }
+.stat-value { font-family: var(--font2); font-size: 26px; font-weight: 700; line-height: 1; }
+.stat-value.green { color: var(--green); }
+.stat-value.amber { color: var(--amber); }
+.stat-value.red { color: var(--red); }
+.stat-sub { font-size: 11px; color: var(--text3); margin-top: 6px; }
+.table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+.table-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.table-title { font-family: var(--font2); font-weight: 600; font-size: 14px; flex: 1; min-width: 120px; }
+.search-input { padding: 7px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 13px; outline: none; }
+.search-input:focus { border-color: var(--accent); }
+.filter-select { padding: 7px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 13px; outline: none; }
+.btn-sm { padding: 7px 14px; border: 1px solid var(--accent); border-radius: var(--radius-sm); color: var(--accent); background: transparent; font-family: var(--font2); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-sm:hover { background: var(--accent); color: #fff; }
+.btn-sm.danger { border-color: var(--red); color: var(--red); }
+.btn-sm.danger:hover { background: var(--red); color: #fff; }
+.btn-sm.success { border-color: var(--green); color: var(--green); }
+.btn-sm.success:hover { background: var(--green); color: #fff; }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; text-align: left; border-bottom: 1px solid var(--border); background: var(--bg2); }
+td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.015); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge.registro { background: rgba(79,142,247,0.15); color: #7bb3fa; border: 1px solid rgba(79,142,247,0.25); }
+.badge.operacion { background: rgba(34,201,122,0.15); color: #4de09a; border: 1px solid rgba(34,201,122,0.25); }
+.badge.drive { background: rgba(167,139,250,0.15); color: #c4affe; border: 1px solid rgba(167,139,250,0.2); }
+.badge.web { background: rgba(45,212,191,0.15); color: #5ee7d4; border: 1px solid rgba(45,212,191,0.2); }
+.badge.dup { background: rgba(239,68,68,0.15); color: #f77171; border: 1px solid rgba(239,68,68,0.3); font-size: 10px; }
+.days-chip { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+.days-chip.ok { background: rgba(34,201,122,0.12); color: var(--green); }
+.days-chip.warn { background: rgba(245,166,35,0.12); color: var(--amber); }
+.days-chip.danger { background: rgba(239,68,68,0.12); color: var(--red); }
+.days-chip.done { background: rgba(34,201,122,0.1); color: var(--green); }
+.days-chip.expired { background: rgba(239,68,68,0.1); color: var(--red); }
+.action-btn { padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-size: 11px; cursor: pointer; transition: all 0.15s; }
+.action-btn:hover { background: var(--bg3); color: var(--text); }
+.alert-row td { background: rgba(245,166,35,0.03) !important; }
+.dup-row td { background: rgba(239,68,68,0.03) !important; }
+.alert-banner { background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 12px; }
+.alert-banner .ab-icon { font-size: 18px; margin-top: 1px; }
+.alert-banner .ab-text { font-size: 13px; color: #f8bb59; line-height: 1.5; }
+.alert-banner .ab-text strong { font-weight: 700; }
+.commission-big { background: linear-gradient(135deg, rgba(79,142,247,0.12), rgba(167,139,250,0.08)); border: 1px solid rgba(79,142,247,0.2); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.5rem; }
+.comm-label { font-size: 11px; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+.comm-value { font-family: var(--font2); font-size: 44px; font-weight: 700; line-height: 1; }
+.comm-sub { font-size: 13px; color: var(--text2); margin-top: 8px; }
+.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+.tab { padding: 10px 18px; font-size: 13px; font-weight: 500; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+.tab:hover { color: var(--text2); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; max-width: 560px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1/-1; }
+.form-label { font-size: 11px; color: var(--text2); font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; }
+.form-input, .form-select { padding: 10px 13px; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 14px; outline: none; transition: border 0.2s; width: 100%; }
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+.submit-btn { margin-top: 1.25rem; padding: 12px 24px; background: var(--accent); border: none; border-radius: var(--radius-sm); color: #fff; font-family: var(--font2); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.submit-btn:hover { background: var(--accent2); }
+.users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.user-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.uc-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.uc-name { font-weight: 600; font-size: 14px; }
+.uc-username { font-size: 11px; color: var(--text3); }
+.uc-stat { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); padding: 5px 0; border-top: 1px solid var(--border); }
+.uc-stat span:last-child { font-weight: 600; color: var(--text); }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); }
+.empty-state .es-icon { font-size: 32px; margin-bottom: 0.75rem; }
+.empty-state p { font-size: 14px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+.modal { background: var(--card); border: 1px solid var(--border2); border-radius: 16px; padding: 1.75rem; width: 100%; max-width: 480px; }
+.modal h3 { font-family: var(--font2); font-size: 16px; font-weight: 600; margin-bottom: 1.25rem; }
+.modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; flex-wrap: wrap; }
+.btn-cancel { padding: 9px 18px; background: transparent; border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text2); font-family: var(--font); font-size: 13px; cursor: pointer; }
+.btn-cancel:hover { background: var(--bg3); color: var(--text); }
+input[type=date] { color-scheme: dark; }
+.busy-overlay { position: fixed; inset: 0; background: rgba(10,13,20,0.58); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 1400; }
+.busy-overlay.show { display: flex; }
+.busy-card { min-width: 220px; max-width: 320px; background: rgba(26,31,48,0.96); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 1rem 1.1rem; box-shadow: 0 24px 60px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 12px; }
+.busy-spinner { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.16); border-top-color: var(--accent); animation: busySpin 0.8s linear infinite; flex-shrink: 0; }
+.busy-text { font-size: 13px; color: var(--text); }
+@keyframes busySpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="busyOverlay" class="busy-overlay" aria-hidden="true">
+  <div class="busy-card">
+    <div class="busy-spinner"></div>
+    <div id="busyText" class="busy-text">Procesando...</div>
+  </div>
+</div>
+<script>
+
+const WARN_DAY = 6;
+const EXPIRE_DAY = 7;
+const AUTO_REFRESH_MS = 3000;
+
+const COLORS = ['#22c97a','#a78bfa','#f5a623','#2dd4bf','#f472b6','#60a5fa'];
+
+let USERS = [];
+
+function daysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().split('T')[0]; }
+function daysSince(ds){ return Math.floor((new Date()-new Date(ds))/86400000); }
+function fmt(ds){ if(!ds) return '-'; const [y,m,d]=ds.split('-'); return `${d}/${m}/${y}`; }
+function fmtDateTime(ds){
+  if(!ds) return '-';
+  const dt=new Date(ds);
+  if(Number.isNaN(dt.getTime())) return ds;
+  const dd=String(dt.getDate()).padStart(2,'0');
+  const mm=String(dt.getMonth()+1).padStart(2,'0');
+  const yyyy=dt.getFullYear();
+  const hh=String(dt.getHours()).padStart(2,'0');
+  const mi=String(dt.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+}
+function initials(n){ return (n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function getUserById(id){ return USERS.find(u=>u.id===id)||{name:'?',color:'#888'}; }
+
+let RECORDS = [];
+let ATTENDANCE = null;
+let ATTENDANCE_LOADING = false;
+let ATTENDANCE_ERROR = '';
+
+let state = {
+  view:'login', currentUser:null, modal:null, newModal:false, resetUserId:null, sessionPassword:'',
+  ft:'', fUser:'', fTipo:'', fDesde:'', fHasta:'', fApproval:'', fSede:'',
+  reportMode:'all', reportUser:'', attendanceSearch:'', attendanceDate:'', attendancePerson:'', attendanceEdit:null,
+  attendanceTab:'resumen', adminTab:'users', alertTab:'warn'
+};
+const PAYROLL_ROLE_OPTIONS = ['Jefe de Pagos','Encargado de Pagos','Jefe de Sede','Personal Registro','Facturacion','Marketing','Sin definir'];
+const PAYROLL_ROLE_CONFIG = {
+  'Jefe de Pagos': { baseSalary:3000, penaltyPerMinute:1.5, bonus:100 },
+  'Encargado de Pagos': { baseSalary:2000, penaltyPerMinute:1.0, bonus:100 },
+  'Jefe de Sede': { baseSalary:1500, penaltyPerMinute:0.7, bonus:150 },
+  'Personal Registro': { baseSalary:1250, penaltyPerMinute:0.5, bonus:50 },
+  'Facturacion': { baseSalary:1500, penaltyPerMinute:0.7, bonus:50 },
+  'Marketing': { baseSalary:0, penaltyPerMinute:0, bonus:0 },
+  'Sin definir': { baseSalary:0, penaltyPerMinute:0, bonus:0 },
+};
+const SEDES = ['Centro','Sur','Norte'];
+let SETTINGS = { commissionPerRecord: 0.40 };
+let BOOTING = true;
+let AUTO_REFRESH_TIMER = null;
+let BUSY_COUNT = 0;
+let BUSY_MESSAGE = 'Procesando...';
+let NEW_RECORD_SUBMITTING = false;
+let EDIT_RECORD_SUBMITTING = false;
+
+function getDups(records){
+  const seen={};
+  records.forEach(r=>{ if(!seen[r.dni]) seen[r.dni]=[]; seen[r.dni].push(r.id); });
+  const s=new Set();
+  Object.values(seen).forEach(ids=>{ if(ids.length>1) ids.forEach(id=>s.add(id)); });
+  return s;
+}
+
+function getCommissionRate(){
+  return Number(SETTINGS.commissionPerRecord||0);
+}
+function updateBusyOverlay(){
+  const overlay=document.getElementById('busyOverlay');
+  const text=document.getElementById('busyText');
+  if(text) text.textContent=BUSY_MESSAGE;
+  if(overlay){
+    overlay.classList.toggle('show', BUSY_COUNT>0);
+    overlay.setAttribute('aria-hidden', BUSY_COUNT>0 ? 'false' : 'true');
+  }
+}
+function showBusy(message){
+  BUSY_COUNT += 1;
+  BUSY_MESSAGE = message || 'Procesando...';
+  updateBusyOverlay();
+}
+function hideBusy(){
+  BUSY_COUNT = Math.max(0, BUSY_COUNT-1);
+  if(BUSY_COUNT===0) BUSY_MESSAGE='Procesando...';
+  updateBusyOverlay();
+}
+function getCommissionableRecordsForUser(user){
+  if(!user) return [];
+  if(user.role==='manager'){
+    return RECORDS.filter(r=>{
+      if(!r.validatedAt) return false;
+      const owner=getUserById(r.userId);
+      return userSede(owner)===userSede(user) && (owner.role==='employee' || owner.id===user.id);
+    });
+  }
+  if(user.role==='employee') return RECORDS.filter(r=>r.userId===user.id&&!!r.validatedAt);
+  return [];
+}
+function calcComm(records, userId){
+  return records.filter(r=>(!userId||r.userId===userId)&&!!r.validatedAt).length * getCommissionRate();
+}
+function calcUserCommission(user){
+  return getCommissionableRecordsForUser(user).length * getCommissionRate();
+}
+
+function isAdmin(){ return state.currentUser?.role==='admin'; }
+function isManager(){ return state.currentUser?.role==='manager'; }
+function isEmployee(){ return state.currentUser?.role==='employee'; }
+function normalizeSede(sede){ return sede==='Lince'?'Centro':(sede||'Centro'); }
+function userSede(user){ return normalizeSede(user?.sede); }
+function getVisibleUsers(){
+  if(isAdmin()) return USERS;
+  if(isManager()) return USERS.filter(u=>u.role!=='admin'&&userSede(u)===userSede(state.currentUser));
+  return USERS.filter(u=>u.id===state.currentUser.id);
+}
+function canManageUsers(){
+  return isAdmin() || isManager();
+}
+function canManageUserRole(role){
+  if(isAdmin()) return true;
+  return isManager() && role==='employee';
+}
+function canManageUser(user){
+  if(isAdmin()) return user.id!==state.currentUser.id;
+  return isManager() && user.role==='employee' && userSede(user)===userSede(state.currentUser);
+}
+function getVisibleRecords(){
+  const visibleUsers=getVisibleUsers().map(u=>u.id);
+  return RECORDS.filter(r=>visibleUsers.includes(r.userId));
+}
+function canViewRecord(r){
+  return getVisibleUsers().some(u=>u.id===r.userId);
+}
+function canValidateOrReject(r){
+  if(!canValidateRecord(r)) return false;
+  if(isAdmin()) return true;
+  const owner=getUserById(r.userId);
+  return isManager() && userSede(owner)===userSede(state.currentUser);
+}
+function canDeleteRecord(r){
+  if(!r) return false;
+  if(isAdmin()) return true;
+  if(isManager()){
+    const owner=getUserById(r.userId);
+    return !!owner && owner.role!=='admin' && userSede(owner)===userSede(state.currentUser);
+  }
+  return false;
+}
+function getRecordOwnerName(r){
+  return getUserById(r.userId)?.name || 'Atención al cliente';
+}
+function getReportableUsers(){
+  return getVisibleUsers().filter(u=>u.role!=='admin');
+}
+function getReportRecords(){
+  const validRecords=getVisibleRecords().filter(r=>!!r.validatedAt);
+  if(state.reportMode==='user' && state.reportUser){
+    return validRecords.filter(r=>r.userId==state.reportUser);
+  }
+  return validRecords;
+}
+function getReportSummaryUsers(){
+  return getReportableUsers().filter(u=>state.reportMode==='all' ? getCommissionableRecordsForUser(u).length>0 : u.id==state.reportUser);
+}
+function roleToLocal(role){ return role==='ADMIN'?'admin':role==='MANAGER'?'manager':'employee'; }
+function localToRole(role){ return role==='manager'?'MANAGER':role==='admin'?'ADMIN':'EMPLOYEE'; }
+function platformToLocal(platform){ return platform==='DRIVE'?'drive':'web'; }
+function localToPlatform(platform){ return platform==='drive'?'DRIVE':'WEB'; }
+function modeToLocal(mode){ return mode==='PRESENCIAL'?'presencial':'virtual'; }
+function localToMode(mode){ return mode==='presencial'?'PRESENCIAL':'VIRTUAL'; }
+function typeToLocal(type){ return type==='OPERACION'?'operacion':'registro'; }
+function localToType(type){ return type==='operacion'?'OPERACION':'REGISTRO'; }
+function isoDate(value){ return value?String(value).slice(0,10):''; }
+function mapUser(user){
+  return {
+    id:user.id,
+    name:user.name,
+    username:user.username,
+    role:roleToLocal(user.role),
+    sede:normalizeSede(user.sede),
+    forcePasswordReset:!!user.forcePasswordReset,
+    color:user.color||COLORS[user.id % COLORS.length]
+  };
+}
+function mapRecord(record){
+  return {
+    id:record.id,
+    userId:record.userId,
+    cliente:record.clientName||'',
+    dni:record.dni,
+    tipo:typeToLocal(record.type),
+    fecha:isoDate(record.registrationDate),
+    fechaOperacion:isoDate(record.operationDate),
+    validatedAt:isoDate(record.validatedAt),
+    rejectedAt:isoDate(record.rejectedAt),
+    rejectionReason:record.rejectionReason||'',
+    createdAt:record.createdAt||`${isoDate(record.registrationDate)}T09:00`,
+    modalidad:modeToLocal(record.mode),
+    plataforma:platformToLocal(record.uploadPlatform),
+    notas:record.notes||''
+  };
+}
+function applyStatePayload(payload){
+  USERS = payload.users.map(mapUser);
+  RECORDS = payload.records.map(mapRecord);
+  SETTINGS = { commissionPerRecord: Number(payload.settings?.commissionPerRecord ?? 0.4) || 0.4 };
+  state.currentUser = mapUser(payload.currentUser);
+  state.resetUserId = payload.currentUser.forcePasswordReset ? payload.currentUser.id : null;
+  if(state.currentUser.forcePasswordReset){
+    state.view='force-password';
+  } else if(!state.view || state.view==='login' || state.view==='force-password'){
+    state.view=state.currentUser.role==='admin'?'dashboard':'mis-registros';
+  }
+}
+async function apiFetch(url, options={}){
+  const fetchOptions={...options};
+  const silent=!!fetchOptions.silent;
+  delete fetchOptions.silent;
+  if(!silent) showBusy(fetchOptions.busyMessage || 'Procesando...');
+  delete fetchOptions.busyMessage;
+  const response = await fetch(url, {
+    credentials:'same-origin',
+    cache:'no-store',
+    ...fetchOptions,
+    headers:{
+      'Content-Type':'application/json',
+      ...(fetchOptions.headers||{})
+    }
+  });
+  try{
+    const payload = await response.json().catch(()=>({}));
+    if(!response.ok){
+      const error = new Error(payload.error || 'Error de servidor');
+      error.status = response.status;
+      error.payload = payload;
+      throw error;
+    }
+    return payload;
+  } finally {
+    if(!silent) hideBusy();
+  }
+}
+async function refreshState(silent=false){
+  const payload = await apiFetch('/api/state', { method:'GET', silent, busyMessage:'Actualizando información...' });
+  applyStatePayload(payload);
+  return payload;
+}
+async function loadAttendance(force=false){
+  if(!isAdmin()) return null;
+  if(ATTENDANCE && !force) return ATTENDANCE;
+  ATTENDANCE_LOADING = true;
+  ATTENDANCE_ERROR = '';
+  render();
+  try{
+    ATTENDANCE = await apiFetch('/api/attendance', { method:'GET', busyMessage:'Cargando asistencias...' });
+    return ATTENDANCE;
+  }catch(error){
+    ATTENDANCE = null;
+    ATTENDANCE_ERROR = error.message || 'No se pudo cargar la asistencia.';
+    return null;
+  } finally {
+    ATTENDANCE_LOADING = false;
+    render();
+  }
+}
+
+function stopAutoRefresh(){
+  if(AUTO_REFRESH_TIMER){
+    clearInterval(AUTO_REFRESH_TIMER);
+    AUTO_REFRESH_TIMER = null;
+  }
+}
+
+function isEditingForm(){
+  const active=document.activeElement;
+  if(!active) return false;
+  const tag=(active.tagName||'').toUpperCase();
+  if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT') return true;
+  if(active.isContentEditable) return true;
+  return false;
+}
+
+function startAutoRefresh(){
+  if(AUTO_REFRESH_TIMER || !state.currentUser) return;
+  AUTO_REFRESH_TIMER = setInterval(async()=>{
+    if(document.visibilityState==='hidden') return;
+    if(!state.currentUser || state.view==='login' || state.view==='force-password') return;
+    if(state.modal!==null || state.newModal) return;
+    if(isEditingForm()) return;
+    if(state.view==='admin' && state.adminTab==='add') return;
+    try{
+      await refreshState(true);
+      render();
+    }catch(error){
+      // Ignore transient polling errors and keep the current screen stable.
+    }
+  }, AUTO_REFRESH_MS);
+}
+
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function recordAge(r){ return daysSince(r.fecha); }
+function operationDelay(r){
+  if(!r.fechaOperacion) return null;
+  return Math.floor((new Date(r.fechaOperacion)-new Date(r.fecha))/86400000);
+}
+function operatedWithinWindow(r){
+  const d=operationDelay(r);
+  return d!==null && d>=0 && d<=EXPIRE_DAY;
+}
+function isPendingApproval(r){
+  return r.tipo==='operacion' && !!r.fechaOperacion && operatedWithinWindow(r) && !r.validatedAt && !r.rejectedAt;
+}
+function isApprovalLocked(r){
+  return isPendingApproval(r) || !!r.validatedAt || !!r.rejectedAt;
+}
+function canValidateRecord(r){
+  return isPendingApproval(r);
+}
+function validationText(r){
+  if(r.validatedAt) return { cls:'done', label:`Validado ${fmt(r.validatedAt)}` };
+  if(r.rejectedAt) return { cls:'expired', label:'Rechazado' };
+  if(r.tipo==='operacion' && !r.fechaOperacion) return { cls:'warn', label:'Falta fecha de operación' };
+  if(r.tipo==='operacion' && !operatedWithinWindow(r)) return { cls:'expired', label:'Operó fuera de plazo' };
+  if(isPendingApproval(r)) return { cls:'danger', label:'Pendiente de aprobación' };
+  if(r.tipo==='registro' && recordAge(r)>EXPIRE_DAY) return { cls:'expired', label:'Sin operación válida' };
+  return { cls:'ok', label:'Aún sin validar' };
+}
+async function validateRecord(id){
+  await apiFetch(`/api/records/${id}/decision`, {
+    method:'POST',
+    body:JSON.stringify({ action:'validate' })
+  });
+  await refreshState();
+}
+async function rejectRecord(id, reason){
+  await apiFetch(`/api/records/${id}/decision`, {
+    method:'POST',
+    body:JSON.stringify({ action:'reject', reason })
+  });
+  await refreshState();
+}
+
+function avatar(user, size=32, fs=12){
+  return `<div class="user-avatar" style="width:${size}px;height:${size}px;background:${user.color};font-size:${fs}px">${initials(user.name)}</div>`;
+}
+function shortTime(value){
+  return value ? String(value).slice(0,5) : '—';
+}
+function minutesLabel(value){
+  if(!value) return '0 min';
+  const hours=Math.floor(value/60);
+  const minutes=value%60;
+  return hours ? `${hours}h ${String(minutes).padStart(2,'0')}m` : `${minutes} min`;
+}
+function monthWorkdays(year, monthIndex){
+  let total=0;
+  const day=new Date(year, monthIndex, 1);
+  while(day.getMonth()===monthIndex){
+    if(day.getDay()!==0) total += 1;
+    day.setDate(day.getDate()+1);
+  }
+  return total;
+}
+function attendanceDayWorked(day){
+  return !!(day.entryTime || day.exitTime);
+}
+function timeMinutesOrNull(value){
+  if(!value) return null;
+  const parts=String(value).split(':').map(Number);
+  if(parts.length<2 || parts.some(Number.isNaN)) return null;
+  return (parts[0]*60) + parts[1];
+}
+function computeAttendancePayment(day, person){
+  const dateObj=new Date(`${day.date}T00:00:00`);
+  if(dateObj.getDay()===0) return { dailyPay:0, latePenalty:0, bonusPoints:0, workedHours:0 };
+  const entryMinutes=timeMinutesOrNull(day.entryTime);
+  const exitMinutes=timeMinutesOrNull(day.exitTime);
+  const roleConfig=PAYROLL_ROLE_CONFIG[person.payrollRole || 'Sin definir'] || PAYROLL_ROLE_CONFIG['Sin definir'];
+  const monthlySalary=Number(person.monthlySalary || roleConfig.baseSalary || 0);
+  const hourlyRate=((monthlySalary/26)/8);
+  const latePenalty=(day.lateMinutes||0) * Number(roleConfig.penaltyPerMinute || 0);
+  const isAbsence=(day.entryStatus==='Sin entrada' && day.exitStatus==='Sin salida');
+  let bonusPoints=0;
+  if(!isAbsence && day.entryStatus!=='Tarde'){
+    bonusPoints=1;
+  }
+  if(entryMinutes===null || exitMinutes===null || isAbsence){
+    return { dailyPay:0, regularPay:0, overtimePay:0, latePenalty, bonusPoints, workedHours:0, regularHours:0, overtimeHours:0 };
+  }
+  const effectiveStart=Math.max(entryMinutes, 9*60);
+  const regularEnd=Math.min(exitMinutes, 18*60);
+  const regularHours=Math.max(0, ((regularEnd - effectiveStart) / 60) - 1);
+  const overtimeHours=Math.max(0, (exitMinutes - (18*60)) / 60);
+  const firstTwoExtra=Math.min(2, overtimeHours);
+  const remainingExtra=Math.max(0, overtimeHours - 2);
+  const regularPay=regularHours * hourlyRate;
+  const overtimePay=(firstTwoExtra * hourlyRate * 1.25) + (remainingExtra * hourlyRate * 1.35);
+  const workedHours=regularHours + overtimeHours;
+  const dailyPay=Math.max(0, regularPay + overtimePay - latePenalty);
+  return { dailyPay, regularPay, overtimePay, latePenalty, bonusPoints, workedHours, regularHours, overtimeHours };
+}
+function getSalaryPeople(){
+  if(!ATTENDANCE?.people?.length) return [];
+  const today=new Date();
+  const currentYear=today.getFullYear();
+  const currentMonth=today.getMonth();
+  const workdays=monthWorkdays(currentYear, currentMonth);
+  let people=getAttendancePeople().map(person=>{
+    const monthDays=person.days.filter(day=>{
+      const dt=new Date(`${day.date}T00:00:00`);
+      return dt.getFullYear()===currentYear && dt.getMonth()===currentMonth;
+    });
+    const roleConfig=PAYROLL_ROLE_CONFIG[person.payrollRole || 'Sin definir'] || PAYROLL_ROLE_CONFIG['Sin definir'];
+    const monthlySalary=Number(person.monthlySalary || roleConfig.baseSalary || 0);
+    const dayPayments=monthDays.map(day=>({
+      ...day,
+      ...computeAttendancePayment(day, { ...person, monthlySalary, payrollRole: person.payrollRole || 'Sin definir' })
+    }));
+    const workedDays=dayPayments.filter(day=>day.dailyPay>0 || attendanceDayWorked(day)).length;
+    const missingDays=Math.max(0, workdays - workedDays);
+    const totalDailyPay=dayPayments.reduce((sum, day)=>sum + Number(day.dailyPay || 0), 0);
+    const totalLatePenalty=dayPayments.reduce((sum, day)=>sum + Number(day.latePenalty || 0), 0);
+    const totalBonusPoints=dayPayments.reduce((sum, day)=>sum + Number(day.bonusPoints || 0), 0);
+    const totalExtraMinutes=dayPayments.reduce((sum, day)=>sum + Number(day.overtimeMinutes || 0), 0);
+    return {
+      ...person,
+      monthDays,
+      dayPayments,
+      workedDays,
+      missingDays,
+      monthlySalary,
+      dailyRate: workdays ? monthlySalary / workdays : 0,
+      hourlyRate: ((monthlySalary/26)/8),
+      estimatedSalary: totalDailyPay,
+      totalDailyPay,
+      totalLatePenalty,
+      totalBonusPoints,
+      totalExtraMinutes
+    };
+  });
+  if(state.attendancePerson){
+    people=people.filter(person=>person.personId===state.attendancePerson);
+  }
+  if(state.attendanceSearch){
+    const q=state.attendanceSearch.toLowerCase();
+    people=people.filter(person=>
+      person.personName.toLowerCase().includes(q) ||
+      person.personId.toLowerCase().includes(q)
+    );
+  }
+  const totalConfiguredSalary=people.reduce((sum, person)=>sum+person.monthlySalary,0);
+  return { people, workdays, totalConfiguredSalary, monthLabel: new Intl.DateTimeFormat('es-PE', { month:'long', year:'numeric' }).format(today) };
+}
+function attendanceBadgeClass(kind){
+  if(kind==='good') return 'ok';
+  if(kind==='warn') return 'warn';
+  if(kind==='danger') return 'danger';
+  return 'done';
+}
+function attendanceStatusMeta(day){
+  if(day.entryTime && day.exitTime) return { cls:'done', label:'Completo' };
+  if(day.entryTime && !day.exitTime) return { cls:'warn', label:'Falta salida' };
+  if(!day.entryTime && day.exitTime) return { cls:'danger', label:'Falta entrada' };
+  return { cls:'expired', label:'Sin marcaje' };
+}
+function getAttendanceRows(){
+  if(!ATTENDANCE?.people?.length) return [];
+  let rows=ATTENDANCE.people.flatMap(person=>
+    person.days.map(day=>({
+      ...day,
+      personId:person.personId,
+      personName:person.personName,
+      department:person.department,
+      totalDays:person.totalDays,
+      lateEntries:person.lateEntries,
+      missingExits:person.missingExits
+    }))
+  );
+  if(state.attendanceSearch){
+    const q=state.attendanceSearch.toLowerCase();
+    rows=rows.filter(row=>
+      row.personName.toLowerCase().includes(q) ||
+      row.personId.toLowerCase().includes(q)
+    );
+  }
+  if(state.attendanceDate){
+    rows=rows.filter(row=>row.date===state.attendanceDate);
+  }
+  if(state.attendancePerson){
+    rows=rows.filter(row=>row.personId===state.attendancePerson);
+  }
+  rows.sort((a,b)=>`${b.date} ${b.entryTime||b.exitTime||''}`.localeCompare(`${a.date} ${a.entryTime||a.exitTime||''}`) || a.personName.localeCompare(b.personName));
+  return rows;
+}
+function getAttendancePeople(){
+  if(!ATTENDANCE?.people?.length) return [];
+  const people=[...ATTENDANCE.people];
+  people.sort((a,b)=>b.totalDays-a.totalDays || b.lateEntries-a.lateEntries || a.personName.localeCompare(b.personName));
+  return people;
+}
+
+function renderAtkLogo(mode='compact'){
+  return `<div class="brand-shell ${mode}">
+    <div class="brand-shine"></div>
+    <div class="brand-content">
+      <div class="brand-atk"><span class="gold">A</span>TK</div>
+      <div class="brand-subtitle">ALTOQUE PERU <span>WK</span></div>
+    </div>
+  </div>`;
+}
+
+function preserveMainScroll(callback){
+  const main=document.querySelector('.main');
+  const scrollTop=main ? main.scrollTop : 0;
+  callback();
+  requestAnimationFrame(()=>{
+    const nextMain=document.querySelector('.main');
+    if(nextMain) nextMain.scrollTop=scrollTop;
+  });
+}
+
+// RENDER
+function render(){
+  const R=document.getElementById('root');
+  if(state.currentUser && state.view!=='login' && state.view!=='force-password') startAutoRefresh();
+  else stopAutoRefresh();
+  if(BOOTING){ R.innerHTML='<div class="login-wrap"><div class="login-card"><div class="page-title">Cargando...</div><div class="page-sub" style="margin-top:8px">Preparando el sistema compartido</div></div></div>'; return; }
+  if(state.view==='login'){ R.innerHTML=renderLogin(); bindLogin(); return; }
+  if(state.view==='force-password'){ R.innerHTML=renderForcePassword(); bindForcePassword(); return; }
+  R.innerHTML=renderApp();
+  bindApp();
+  if(state.modal!==null){ document.getElementById('mr').innerHTML=renderModal(); bindModal(); }
+  else if(state.attendanceEdit){ document.getElementById('mr').innerHTML=renderAttendanceEditModal(); bindAttendanceEditModal(); }
+  else if(state.newModal){ document.getElementById('mr').innerHTML=renderNuevoModal(); bindNuevoModal(); }
+}
+
+async function boot(){
+  try{
+    await refreshState();
+  }catch(error){
+    state.currentUser=null;
+    state.resetUserId=null;
+    state.view='login';
+  }finally{
+    BOOTING=false;
+    render();
+  }
+}
+function renderLogin(){
+  return `<div class="login-wrap"><div class="login-card">
+    <div class="login-logo">
+      <div class="icon-wrap">💎</div>
+      <div class="brand">LINCE</div>
+      <div class="sub">Sistema de Comisiones</div>
+    </div>
+    <form id="loginForm">
+      <div class="field"><label>Usuario</label><input id="lu" type="text" placeholder="tu usuario" autocomplete="username" spellcheck="false"/></div>
+      <div class="field password-field"><label>Contraseña</label><input id="lp" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false"/><button type="button" id="tp" class="toggle-pass">Ver</button></div>
+      <div id="le" class="err-msg">Usuario o contraseña incorrectos</div>
+      <button class="btn-primary" id="lb" type="submit">Entrar</button>
+    </form>
+    <div class="login-hint">
+      <strong>Admin:</strong> admin / admin123<br>
+      <strong>Empleadas:</strong> maria, lucia, carmen<br>
+      <em>(contraseña: nombre + 123)</em>
+    </div>
+  </div></div>`;
+}
+
+function bindLogin(){
+  const userInput=document.getElementById('lu');
+  const passInput=document.getElementById('lp');
+  const err=document.getElementById('le');
+  const form=document.getElementById('loginForm');
+  const toggleBtn=document.getElementById('tp');
+  const go=async()=>{
+    const username=userInput.value.trim();
+    const password=passInput.value;
+    try{
+      const payload = await apiFetch('/api/auth/login', {
+        method:'POST',
+        body:JSON.stringify({ username, password }),
+        busyMessage:'Ingresando al sistema...'
+      });
+      state.sessionPassword=password;
+      applyStatePayload(payload);
+      render();
+    }catch(error){
+      err.textContent='Usuario o contraseña incorrectos';
+      err.style.display='block';
+    }
+  };
+  form.onsubmit=async e=>{ e.preventDefault(); await go(); };
+  [userInput, passInput].forEach(input=>{
+    input.oninput=()=>{ err.style.display='none'; };
+    input.onkeydown=async e=>{ if(e.key==='Enter'){ e.preventDefault(); await go(); } };
+  });
+  toggleBtn.onclick=()=>{
+    const isHidden=passInput.type==='password';
+    passInput.type=isHidden?'text':'password';
+    toggleBtn.textContent=isHidden?'Ocultar':'Ver';
+    passInput.focus();
+  };
+  userInput.focus();
+}
+
+function bindForcePassword(){
+  const form=document.getElementById('resetForm');
+  const err=document.getElementById('re');
+  if(!form||!err) return;
+  form.onsubmit=async e=>{
+    e.preventDefault();
+    const p1=document.getElementById('rp1').value;
+    const p2=document.getElementById('rp2').value;
+    if(p1.length<6){ err.textContent='La contraseña debe tener al menos 6 caracteres'; err.style.display='block'; return; }
+    if(p1!==p2){ err.textContent='Las contraseñas no coinciden'; err.style.display='block'; return; }
+    try{
+      await apiFetch('/api/settings/password', {
+        method:'POST',
+        body:JSON.stringify({ currentPassword: state.sessionPassword, newPassword:p1, repeatPassword:p2 })
+      });
+      state.sessionPassword=p1;
+      await refreshState();
+      render();
+    }catch(error){
+      err.textContent=error.message || 'No se pudo actualizar la contraseña';
+      err.style.display='block';
+    }
+  };
+}
+
+function renderForcePassword(){
+  const u=USERS.find(x=>x.id===state.resetUserId)||state.currentUser||{name:'Usuario'};
+  return `<div class="login-wrap"><div class="login-card">
+    <div class="login-logo">
+      <div class="icon-wrap">🔐</div>
+      <div class="brand">Primer ingreso</div>
+      <div class="sub">${u.name}</div>
+    </div>
+    <form id="resetForm">
+      <div class="field"><label>Nueva contraseña</label><input id="rp1" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"/></div>
+      <div class="field"><label>Repetir contraseña</label><input id="rp2" type="password" placeholder="repite la contraseña" autocomplete="new-password"/></div>
+      <div id="re" class="err-msg">Las contraseñas no coinciden</div>
+      <button class="btn-primary" id="rb" type="submit">Guardar y entrar</button>
+    </form>
+  </div></div>`;
+}
+
+function renderSidebar(){
+  const u=state.currentUser;
+  const elevated=isAdmin();
+  const nav=isManager()?[
+    {id:'dashboard',icon:'📊',label:'Dashboard'},
+    {id:'estadisticas',icon:'📈',label:'Estadísticas'},
+    {id:'mis-registros',icon:'📋',label:'Mis Registros'},
+    {id:'todos',icon:'📝',label:'Registros de Sede'},
+    {id:'alertas',icon:'🔔',label:'Alertas'},
+    {id:'mis-comisiones',icon:'💰',label:'Mis Comisiones'},
+    {id:'admin',icon:'⚙️',label:'Mi Equipo'},
+    {id:'reportes',icon:'📄',label:'Reportes'},
+  ]:elevated?[
+    {id:'dashboard',icon:'📊',label:'Dashboard'},
+    {id:'estadisticas',icon:'📈',label:'Estadísticas'},
+    {id:'asistencia',icon:'🕘',label:'Asistencia'},
+    {id:'todos',icon:'📋',label:'Todos los Registros'},
+    {id:'alertas',icon:'🔔',label:'Alertas'},
+    {id:'admin',icon:'⚙️',label:isAdmin()?'Administración':'Mi Equipo'},
+    {id:'reportes',icon:'📄',label:'Reportes'},
+  ]:[
+    {id:'mis-registros',icon:'📋',label:'Mis Registros'},
+    {id:'alertas',icon:'🔔',label:'Alertas'},
+    {id:'mis-comisiones',icon:'💰',label:'Mis Comisiones'},
+  ];
+  const cleanIcons={
+    'dashboard':'&#128202;',
+    'estadisticas':'&#128200;',
+    'asistencia':'&#128345;',
+    'mis-registros':'&#128203;',
+    'todos':'&#128209;',
+    'alertas':'&#128276;',
+    'mis-comisiones':'&#128176;',
+    'admin':'&#9881;',
+    'reportes':'&#128196;'
+  };
+  nav.forEach(item=>{ if(cleanIcons[item.id]) item.icon=cleanIcons[item.id]; });
+  return `<aside class="sidebar">
+    <div class="sidebar-logo"><div class="brand">💎 LINCE</div><div class="sub">Comisiones</div></div>
+    ${nav.map(n=>`<div class="nav-item${state.view===n.id?' active':''}" data-nav="${n.id}"><span class="nav-icon">${n.icon}</span><span>${n.label}</span></div>`).join('')}
+    <div class="sidebar-footer">
+      <div class="user-badge">${avatar(u,32,11)}<div><div class="user-name">${u.name}</div><div class="user-role">${u.role==='admin'?'Admin General':u.role==='manager'?'Jefe de sede':'Atención al cliente'} · ${userSede(u)}</div></div></div>
+      <div class="logout-btn" id="logoutBtn">Cerrar sesión</div>
+      <div class="app-version">v2.1</div>
+    </div>
+  </aside>`;
+}
+
+function renderApp(){
+  let content='';
+  const v=state.view;
+  const roleLabel=state.currentUser.role==='admin'?'Admin General':state.currentUser.role==='manager'?'Jefe de sede':'Atención al cliente';
+  const hello=`<div class="hero-banner"><div class="hero-kicker">Panel de trabajo</div><div class="hero-name">Hola ${state.currentUser.name}</div><div class="hero-meta"><span class="hero-chip"><span class="hero-chip-label">Sede</span><strong>${userSede(state.currentUser)}</strong></span><span class="hero-chip"><span class="hero-chip-label">Cargo</span><strong>${roleLabel}</strong></span></div></div>`;
+  if(v==='dashboard') content=renderDashboard();
+  else if(v==='estadisticas') content=renderEstadisticas();
+  else if(v==='asistencia') content=renderAsistencia();
+  else if(v==='todos') content=renderTodos();
+  else if(v==='alertas') content=renderAlertas();
+  else if(v==='admin') content=renderAdmin();
+  else if(v==='reportes') content=renderReportes();
+  else if(v==='mis-registros') content=renderMisRegistros();
+  else if(v==='mis-comisiones') content=renderMisComisiones();
+  return `<div class="app">${renderSidebar()}<main class="main">${hello}${content}</main></div><div id="mr"></div>`;
+}
+
+function renderDashboard(){
+  const visibleRecords=getVisibleRecords();
+  const dups=getDups(visibleRecords);
+  const alerts=visibleRecords.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)===WARN_DAY);
+  const expired=visibleRecords.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)>EXPIRE_DAY);
+  const ops=visibleRecords.filter(r=>!!r.validatedAt);
+  const pendingValidation=visibleRecords.filter(r=>canValidateOrReject(r));
+  const regs=visibleRecords.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)<=EXPIRE_DAY);
+  const totalComm=visibleRecords.filter(r=>!!r.validatedAt).length * getCommissionRate();
+
+  let h=`<div class="page-header"><div class="page-title">Dashboard General</div><div class="page-sub">Vista completa de comisiones y estado de clientes</div></div>`;
+  if(alerts.length>0) h+=`<div class="alert-banner"><div class="ab-icon">⚠️</div><div class="ab-text"><strong>${alerts.length} cliente(s) en día 6</strong> — mañana vence el plazo. Informar a las empleadas para actualizar si ya operaron.</div></div>`;
+  if(pendingValidation.length>0) h+=`<div class="alert-banner"><div class="ab-icon">✅</div><div class="ab-text"><strong>${pendingValidation.length} registro(s) listos para validar</strong> — operaron dentro de los 7 días y ya puedes validarlos en cualquier momento.</div></div>`;
+  h+=`<div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Total Comisiones</div><div class="stat-value green">S/ ${totalComm.toFixed(2)}</div><div class="stat-sub">${ops.length} operaciones confirmadas</div></div>
+    <div class="stat-card"><div class="stat-label">Pendientes en Plazo</div><div class="stat-value amber">${regs.length}</div><div class="stat-sub">Potencial S/ ${(regs.length*getCommissionRate()).toFixed(2)}</div></div>
+    <div class="stat-card"><div class="stat-label">Pendientes de Aprobación</div><div class="stat-value amber">${pendingValidation.length}</div><div class="stat-sub">Esperando revisión</div></div>
+    <div class="stat-card"><div class="stat-label">Duplicados</div><div class="stat-value red">${Math.round(dups.size/2)||0}</div><div class="stat-sub">DNIs repetidos</div></div>
+    <div class="stat-card"><div class="stat-label">Expirados sin Operación</div><div class="stat-value red">${expired.length}</div><div class="stat-sub">Sin comisión</div></div>
+  </div>`;
+  h+=`<div style="margin-bottom:1.5rem"><div style="font-family:var(--font2);font-size:14px;font-weight:600;margin-bottom:1rem">${isAdmin()?'Comisiones por usuario':'Comisiones de tu sede'}</div><div class="users-grid">`;
+  getVisibleUsers().filter(u=>u.role!=='admin'&&(!isManager()||u.id!==state.currentUser.id)).forEach(u=>{
+    const userRecords=visibleRecords.filter(r=>r.userId===u.id);
+    const c=calcUserCommission(u);
+    const o=userRecords.filter(r=>!!r.validatedAt).length;
+    const rr=userRecords.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)<=EXPIRE_DAY).length;
+    h+=`<div class="stat-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">${avatar(u,30,11)}<div style="font-size:13px;font-weight:600">${u.name}</div></div>
+      <div style="font-family:var(--font2);font-size:22px;font-weight:700;color:var(--green)">S/ ${c.toFixed(2)}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px">${o} validadas · ${rr} pendientes</div></div>`;
+  });
+  h+='</div></div>';
+  return h;
+}
+
+function renderEstadisticas(){
+  const visibleRecords=getVisibleRecords();
+  const visibleUsers=getVisibleUsers().filter(u=>u.role!=='admin');
+  const totalRecords=visibleRecords.length;
+  const virtualCount=visibleRecords.filter(r=>(r.modalidad||'virtual')==='virtual').length;
+  const presencialCount=visibleRecords.filter(r=>r.modalidad==='presencial').length;
+  const validatedCount=visibleRecords.filter(r=>!!r.validatedAt).length;
+  const pendingApprovalCount=visibleRecords.filter(r=>isPendingApproval(r)).length;
+  const operationCount=visibleRecords.filter(r=>r.tipo==='operacion').length;
+  const registrationCount=visibleRecords.filter(r=>r.tipo==='registro').length;
+  const virtualPct=totalRecords?((virtualCount/totalRecords)*100):0;
+  const presencialPct=totalRecords?((presencialCount/totalRecords)*100):0;
+  const avgPerUser=visibleUsers.length?(totalRecords/visibleUsers.length):0;
+  const ranking=visibleUsers.map(user=>{
+    const userRecords=visibleRecords.filter(r=>r.userId===user.id);
+    const validated=userRecords.filter(r=>!!r.validatedAt).length;
+    const pending=userRecords.filter(r=>isPendingApproval(r)).length;
+    return {
+      user,
+      total:userRecords.length,
+      validated,
+      pending,
+      commission:calcUserCommission(user),
+      virtual:userRecords.filter(r=>(r.modalidad||'virtual')==='virtual').length,
+      presencial:userRecords.filter(r=>r.modalidad==='presencial').length
+    };
+  }).sort((a,b)=>b.total-a.total || b.validated-a.validated || a.user.name.localeCompare(b.user.name));
+
+  let h=`<div class="page-header"><div class="page-title">Estadísticas</div><div class="page-sub">${isAdmin()?'Resumen general de todos los usuarios':'Resumen general de tu sede y tu equipo'}</div></div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Registros Totales</div><div class="stat-value">${totalRecords}</div><div class="stat-sub">${visibleUsers.length} usuario(s) visibles</div></div>
+    <div class="stat-card"><div class="stat-label">Virtuales</div><div class="stat-value green">${virtualCount}</div><div class="stat-sub">${virtualPct.toFixed(1)}% del total</div></div>
+    <div class="stat-card"><div class="stat-label">Presenciales</div><div class="stat-value amber">${presencialCount}</div><div class="stat-sub">${presencialPct.toFixed(1)}% del total</div></div>
+    <div class="stat-card"><div class="stat-label">Validados</div><div class="stat-value green">${validatedCount}</div><div class="stat-sub">${pendingApprovalCount} pendientes de aprobación</div></div>
+    <div class="stat-card"><div class="stat-label">Promedio por Atención al cliente</div><div class="stat-value">${avgPerUser.toFixed(1)}</div><div class="stat-sub">${operationCount} operaciones · ${registrationCount} registros</div></div>
+  </div>`;
+
+  h+=`<div class="table-wrap" style="margin-bottom:1.5rem"><div class="table-header"><div class="table-title">Distribución de modalidad</div></div><div style="padding:1.25rem">
+    <div style="display:grid;grid-template-columns:1fr;gap:1rem">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:8px"><span>💻 Virtual</span><strong style="color:var(--text)">${virtualCount} · ${virtualPct.toFixed(1)}%</strong></div>
+        <div style="height:12px;border-radius:999px;background:var(--bg3);overflow:hidden"><div style="width:${virtualPct}%;height:100%;background:linear-gradient(90deg, rgba(79,142,247,0.95), rgba(45,212,191,0.8))"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:8px"><span>🏢 Presencial</span><strong style="color:var(--text)">${presencialCount} · ${presencialPct.toFixed(1)}%</strong></div>
+        <div style="height:12px;border-radius:999px;background:var(--bg3);overflow:hidden"><div style="width:${presencialPct}%;height:100%;background:linear-gradient(90deg, rgba(245,166,35,0.95), rgba(255,204,0,0.8))"></div></div>
+      </div>
+    </div>
+  </div></div>`;
+
+  h+=`<div class="table-wrap"><div class="table-header"><div class="table-title">Ranking de atención al cliente con más registros</div></div>
+  <table><thead><tr><th>#</th><th>Atención al cliente</th><th>Sede</th><th>Total Registros</th><th>Virtual</th><th>Presencial</th><th>Validados</th><th>Pendientes Aprobación</th><th>Comisión</th></tr></thead><tbody>`;
+  ranking.forEach((row,index)=>{
+    h+=`<tr>
+      <td><span style="font-family:var(--font2);font-weight:700">${index+1}</span></td>
+      <td><div style="display:flex;align-items:center;gap:8px">${avatar(row.user,28,10)}<div><div style="font-weight:600">${row.user.name}</div><div style="font-size:11px;color:var(--text3)">@${row.user.username}</div></div></div></td>
+      <td>${userSede(row.user)}</td>
+      <td style="font-weight:700">${row.total}</td>
+      <td>${row.virtual}</td>
+      <td>${row.presencial}</td>
+      <td style="color:var(--green);font-weight:600">${row.validated}</td>
+      <td style="color:var(--amber);font-weight:600">${row.pending}</td>
+      <td style="color:var(--green);font-weight:700">S/ ${row.commission.toFixed(2)}</td>
+    </tr>`;
+  });
+  if(!ranking.length) h+=`<tr><td colspan="9"><div class="empty-state"><div class="es-icon">📈</div><p>Aún no hay atención al cliente con registros visibles para mostrar estadísticas.</p></div></td></tr>`;
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderAsistencia(){
+  let h=`<div class="page-header"><div class="page-title">Control de Asistencia</div><div class="page-sub">Resumen local del Excel de marcajes de toda la empresa</div></div>`;
+  if(ATTENDANCE_LOADING && !ATTENDANCE){
+    return h + `<div class="table-wrap"><div class="empty-state"><div class="es-icon">🕘</div><p>Cargando asistencias...</p></div></div>`;
+  }
+  if(ATTENDANCE_ERROR){
+    return h + `<div class="alert-banner"><div class="ab-icon">⚠️</div><div class="ab-text"><strong>No se pudo cargar la asistencia.</strong> ${ATTENDANCE_ERROR}</div></div>`;
+  }
+  if(!ATTENDANCE || !ATTENDANCE.people?.length){
+    return h + `<div class="table-wrap"><div class="empty-state"><div class="es-icon">🗂️</div><p>Aún no hay asistencias importadas.</p></div></div>`;
+  }
+
+  const summary=ATTENDANCE.summary || {};
+  const rows=getAttendanceRows();
+  const people=getAttendancePeople();
+  const salaryData=getSalaryPeople();
+  h+=`<div class="tabs" style="margin-bottom:1.25rem">
+    <div class="tab${state.attendanceTab==='resumen'?' active':''}" data-attendance-tab="resumen">Resumen</div>
+    <div class="tab${state.attendanceTab==='ajustes'?' active':''}" data-attendance-tab="ajustes">Ajustes</div>
+  </div>`;
+  h+=`<div class="alert-banner"><div class="ab-icon">📁</div><div class="ab-text"><strong>Archivo local:</strong> ${ATTENDANCE.sourceFile}<br><strong>Importado:</strong> ${fmtDateTime(ATTENDANCE.importedAt)} · <strong>Horario base:</strong> ${ATTENDANCE.schedule.entry} a ${ATTENDANCE.schedule.exit} · <strong>Tolerancia:</strong> ${ATTENDANCE.schedule.entryToleranceMinutes||5} min</div></div>`;
+  if(state.attendanceTab==='ajustes'){
+    h+=`<div class="table-wrap"><div class="table-header">
+      <div class="table-title">Ajustes de cargos y sueldos</div>
+      <input class="search-input" id="attendanceSearch" placeholder="🔍 Nombre o DNI..." value="${state.attendanceSearch}" style="width:190px"/>
+      <select class="filter-select" id="attendancePerson">
+        <option value="">Todo el personal</option>
+        ${people.map(person=>`<option value="${person.personId}"${state.attendancePerson===person.personId?' selected':''}>${person.personName}</option>`).join('')}
+      </select>
+      <button class="btn-sm" id="attendanceRefresh">Actualizar</button>
+    </div>
+    <table><thead><tr><th>Persona</th><th>Cargo</th><th>Sueldo mensual</th><th>Sueldo estimado del mes</th><th></th></tr></thead><tbody>`;
+    (salaryData?.people||[]).forEach(person=>{
+      h+=`<tr>
+        <td><div style="font-weight:600">${person.personName}</div><div style="font-size:11px;color:var(--text3)">${person.personId}</div></td>
+        <td>
+          <select class="filter-select" data-payroll-role="${person.personId}">
+            ${PAYROLL_ROLE_OPTIONS.map(option=>`<option value="${option}"${(person.payrollRole||'Sin definir')===option?' selected':''}>${option}</option>`).join('')}
+          </select>
+        </td>
+        <td><input class="search-input" data-payroll-salary="${person.personId}" type="number" min="0" step="0.01" value="${Number(person.monthlySalary||0).toFixed(2)}" style="width:130px"/></td>
+        <td style="font-family:var(--font2);font-weight:700;color:var(--green)">S/ ${Number(person.estimatedSalary||0).toFixed(2)}</td>
+        <td><button class="action-btn" data-payroll-save="${person.personId}">Guardar</button></td>
+      </tr>`;
+    });
+    if(!(salaryData?.people||[]).length) h+=`<tr><td colspan="5"><div class="empty-state"><div class="es-icon">⚙️</div><p>No hay personas visibles para ajustar.</p></div></td></tr>`;
+    h+=`</tbody></table></div>`;
+    return h;
+  }
+  h+=`<div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Integrantes detectados</div><div class="stat-value">${summary.totalPeople||0}</div><div class="stat-sub">${summary.totalDays||0} jornada(s) agrupadas</div></div>
+    <div class="stat-card"><div class="stat-label">Tardanzas</div><div class="stat-value amber">${summary.lateEntries||0}</div><div class="stat-sub">Primer marcaje desde las 09:06</div></div>
+    <div class="stat-card"><div class="stat-label">Faltas de salida</div><div class="stat-value red">${summary.missingExits||0}</div><div class="stat-sub">Solo se encontró entrada</div></div>
+    <div class="stat-card"><div class="stat-label">Faltas de entrada</div><div class="stat-value red">${summary.missingEntries||0}</div><div class="stat-sub">Solo se encontró salida</div></div>
+    <div class="stat-card"><div class="stat-label">Días completos</div><div class="stat-value green">${summary.completeDays||0}</div><div class="stat-sub">Con entrada y salida detectadas</div></div>
+  </div>`;
+  if(salaryData && salaryData.people){
+    h+=`<div class="table-wrap" style="margin-bottom:1.5rem"><div class="table-header">
+      <div class="table-title">Sueldo estimado de ${salaryData.monthLabel}</div>
+      <div style="font-size:12px;color:var(--text2)">Lógica exacta del Excel: valor hora = (sueldo/26)/8, resta 1 hora, descuenta tardanzas por minuto según cargo.</div>
+    </div>
+    <table><thead><tr><th>Persona</th><th>Cargo</th><th>Días pagables</th><th>Tardanzas</th><th>Penalidades</th><th>Min extra</th><th>Puntos bono</th><th>Pago estimado</th></tr></thead><tbody>`;
+    salaryData.people.forEach(person=>{
+      h+=`<tr>
+        <td><div style="font-weight:600">${person.personName}</div><div style="font-size:11px;color:var(--text3)">${person.personId}</div></td>
+        <td>${person.payrollRole||'Sin definir'}</td>
+        <td style="font-weight:700;color:var(--green)">${person.dayPayments.filter(day=>Number(day.dailyPay||0)>0).length}</td>
+        <td style="font-weight:700;color:${person.lateEntries>0?'var(--amber)':'var(--text2)'}">${person.lateEntries}</td>
+        <td style="font-weight:700;color:${person.totalLatePenalty>0?'var(--red)':'var(--text2)'}">S/ ${person.totalLatePenalty.toFixed(2)}</td>
+        <td style="font-weight:700;color:${person.totalExtraMinutes>0?'var(--green)':'var(--text2)'}">${minutesLabel(person.totalExtraMinutes)}</td>
+        <td>${person.totalBonusPoints}</td>
+        <td style="font-family:var(--font2);font-size:18px;font-weight:700;color:var(--green)">S/ ${person.estimatedSalary.toFixed(2)}</td>
+      </tr>`;
+    });
+    if(!salaryData.people.length) h+=`<tr><td colspan="8"><div class="empty-state"><div class="es-icon">💼</div><p>No hay personas para calcular sueldo con esos filtros.</p></div></td></tr>`;
+    h+=`</tbody></table></div>`;
+  }
+
+  h+=`<div class="table-wrap" style="margin-bottom:1.5rem"><div class="table-header">
+    <div class="table-title">Asistencia por día (${rows.length})</div>
+    <input class="search-input" id="attendanceSearch" placeholder="🔍 Nombre o DNI..." value="${state.attendanceSearch}" style="width:190px"/>
+    <select class="filter-select" id="attendancePerson">
+      <option value="">Todo el personal</option>
+      ${people.map(person=>`<option value="${person.personId}"${state.attendancePerson===person.personId?' selected':''}>${person.personName}</option>`).join('')}
+    </select>
+    <select class="filter-select" id="attendanceDate">
+      <option value="">Todas las fechas</option>
+      ${(ATTENDANCE.availableDates||[]).map(date=>`<option value="${date}"${state.attendanceDate===date?' selected':''}>${fmt(date)}</option>`).join('')}
+    </select>
+    <button class="btn-sm" id="attendanceRefresh">Actualizar</button>
+  </div>
+  <table><thead><tr><th>Fecha</th><th>Persona</th><th>Entrada</th><th>Estado entrada</th><th>Salida</th><th>Estado salida</th><th>Tardanza</th><th>Minutos extra</th><th>Pago día</th><th>Estado del día</th><th></th></tr></thead><tbody>`;
+  rows.forEach(row=>{
+    const personProfile=(salaryData?.people||[]).find(person=>person.personId===row.personId) || { payrollRole:'Sin definir', monthlySalary:0 };
+    const payment=computeAttendancePayment(row, personProfile);
+    const entryClass=attendanceBadgeClass(row.entryTime ? (row.lateMinutes>0?'warn':'good') : 'danger');
+    const exitClass=attendanceBadgeClass(row.exitTime ? 'done' : 'danger');
+    const dayState=attendanceStatusMeta(row);
+    const entryCell=`<div style="display:flex;align-items:center;gap:6px"><span style="font-family:var(--font2);font-weight:700">${shortTime(row.entryTime)}</span>${row.manualEntry?'<span class="badge drive">Manual</span>':''}</div>`;
+    const exitCell=`<div style="display:flex;align-items:center;gap:6px"><span style="font-family:var(--font2);font-weight:700">${shortTime(row.exitTime)}</span>${row.manualExit?'<span class="badge drive">Manual</span>':''}</div>`;
+    const editPayload=encodeURIComponent(JSON.stringify({personId:row.personId,personName:row.personName,date:row.date,entryTime:row.entryTime||'',exitTime:row.exitTime||''}));
+    h+=`<tr>
+      <td>${fmt(row.date)}</td>
+      <td><div style="font-weight:600">${row.personName}</div><div style="font-size:11px;color:var(--text3)">${row.personId}</div></td>
+      <td>${entryCell}</td>
+      <td><span class="days-chip ${entryClass}">${row.entryStatus}</span></td>
+      <td>${exitCell}</td>
+      <td><span class="days-chip ${exitClass}">${row.exitStatus}</span></td>
+      <td style="color:${row.lateMinutes>0?'var(--amber)':'var(--text2)'};font-weight:${row.lateMinutes>0?'700':'500'}">${minutesLabel(row.lateMinutes)}</td>
+      <td style="color:${row.overtimeMinutes>0?'var(--green)':'var(--text2)'};font-weight:${row.overtimeMinutes>0?'700':'500'}">${minutesLabel(row.overtimeMinutes)}</td>
+      <td style="font-weight:700;color:${payment.dailyPay>0?'var(--green)':'var(--text2)'}">S/ ${Number(payment.dailyPay||0).toFixed(2)}</td>
+      <td><span class="days-chip ${dayState.cls}">${dayState.label}</span></td>
+      <td><button class="action-btn" data-attendance-edit="${editPayload}">Editar</button></td>
+    </tr>`;
+  });
+  if(!rows.length) h+=`<tr><td colspan="11"><div class="empty-state"><div class="es-icon">🗓️</div><p>No hay asistencias con esos filtros.</p></div></td></tr>`;
+  h+=`</tbody></table></div>`;
+
+  return h;
+}
+
+function renderAttendanceEditModal(){
+  const item=state.attendanceEdit;
+  if(!item) return '';
+  return `<div class="modal-overlay" id="aoverlay">
+    <div class="modal">
+      <h3>Editar asistencia</h3>
+      <div class="form-grid">
+        <div class="form-group full"><label class="form-label">Atención al cliente</label><input class="form-input" value="${item.personName}" disabled/></div>
+        <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" value="${fmt(item.date)}" disabled/></div>
+        <div class="form-group"><label class="form-label">DNI</label><input class="form-input" value="${item.personId}" disabled/></div>
+        <div class="form-group"><label class="form-label">Entrada</label><input class="form-input" id="attendanceEntryEdit" placeholder="HH:MM" value="${item.entryTime ? String(item.entryTime).slice(0,5) : ''}"/></div>
+        <div class="form-group"><label class="form-label">Salida</label><input class="form-input" id="attendanceExitEdit" placeholder="HH:MM" value="${item.exitTime ? String(item.exitTime).slice(0,5) : ''}"/></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="attendanceEditClose">Cancelar</button>
+        <button class="btn-primary" id="attendanceEditSave" style="width:auto;padding:9px 20px">Guardar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function dayChip(r){
+  if(r.tipo==='operacion' && r.fechaOperacion) return `<span class="days-chip done">Operó en ${fmt(r.fechaOperacion)}</span>`;
+  const d=recordAge(r);
+  if(d>EXPIRE_DAY) return `<span class="days-chip expired">⛔ Expirado (${d}d)</span>`;
+  if(d>=WARN_DAY) return `<span class="days-chip danger">⚠️ Día ${d}</span>`;
+  return `<span class="days-chip ok">Día ${d}</span>`;
+}
+
+function renderTodos(){
+  const visibleRecords=getVisibleRecords();
+  const dups=getDups(visibleRecords);
+  let rr=[...visibleRecords];
+  if(state.ft){ const q=state.ft.toLowerCase(); rr=rr.filter(r=>r.dni.includes(q)||(r.cliente||'').toLowerCase().includes(q)||getUserById(r.userId).name.toLowerCase().includes(q)); }
+  if(state.fUser) rr=rr.filter(r=>r.userId==state.fUser);
+  if(state.fSede) rr=rr.filter(r=>userSede(getUserById(r.userId))===state.fSede);
+  if(state.fTipo) rr=rr.filter(r=>r.tipo===state.fTipo);
+  if(state.fApproval) rr=rr.filter(r=>state.fApproval==='pending'?isPendingApproval(r):state.fApproval==='validated'?!!r.validatedAt:state.fApproval==='rejected'?!!r.rejectedAt:true);
+  if(state.fDesde) rr=rr.filter(r=>r.fecha>=state.fDesde);
+  if(state.fHasta) rr=rr.filter(r=>r.fecha<=state.fHasta);
+  rr.sort((a,b)=>b.fecha.localeCompare(a.fecha));
+
+  let h=`<div class="page-header"><div class="page-title">${isEmployee()?'Mis Registros con Alertas':'Todos los Registros'}</div><div class="page-sub">${isAdmin()?'Vista global':isManager()?'Registros visibles de tu sede':'Tus registros con alertas, duplicados y seguimiento automático'}</div></div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">Registros (${rr.length})</div>
+      <input class="search-input" id="ft" placeholder="🔍 DNI o nombre..." value="${state.ft}" style="width:170px"/>
+      ${(isAdmin()||isManager())?`<select class="filter-select" id="fu"><option value="">${isAdmin()?'Todo el equipo':'Toda tu sede'}</option>${getVisibleUsers().filter(u=>u.role!=='admin'&&u.id!==state.currentUser.id).map(u=>`<option value="${u.id}"${state.fUser==u.id?' selected':''}>${u.name}</option>`).join('')}</select>`:''}
+      ${isAdmin()?`<select class="filter-select" id="fs"><option value="">Todas las sedes</option>${SEDES.map(s=>`<option value="${s}"${state.fSede===s?' selected':''}>${s}</option>`).join('')}</select>`:''}
+      <select class="filter-select" id="ftp"><option value="">Todos los tipos</option><option value="registro"${state.fTipo==='registro'?' selected':''}>Registro</option><option value="operacion"${state.fTipo==='operacion'?' selected':''}>Operación</option></select>
+      ${(isAdmin()||isManager())?`<select class="filter-select" id="fap"><option value="">Toda aprobación</option><option value="pending"${state.fApproval==='pending'?' selected':''}>Pendientes</option><option value="validated"${state.fApproval==='validated'?' selected':''}>Validados</option><option value="rejected"${state.fApproval==='rejected'?' selected':''}>Rechazados</option></select>`:''}
+      <input class="search-input" id="fd" type="date" value="${state.fDesde}" style="width:135px" title="Desde"/>
+      <input class="search-input" id="fh" type="date" value="${state.fHasta}" style="width:135px" title="Hasta"/>
+    </div>
+    <table><thead><tr><th>Cliente</th><th>DNI</th>${!isEmployee()?'<th>Atención al cliente</th>':''}<th>Tipo</th><th>Modalidad</th><th>Fecha</th><th>Estado</th><th>Aprobación</th><th>Plataforma</th>${!isEmployee()?'<th>Subido</th>':''}<th>Notas</th><th></th></tr></thead><tbody>`;
+  rr.forEach(r=>{
+    const dup=dups.has(r.id);
+    const u=getUserById(r.userId);
+    const d=recordAge(r);
+    const isAlert=r.tipo==='registro'&&d===WARN_DAY;
+    const row=dup?'dup-row':isAlert?'alert-row':'';
+    const validation=validationText(r);
+    h+=`<tr class="${row}">
+      <td>${r.cliente||'—'}</td>
+      <td><span style="font-family:var(--font2);font-weight:600">${r.dni}</span>${dup?' <span class="badge dup">DUP</span>':''}</td>
+      ${!isEmployee()?`<td><div style="display:flex;align-items:center;gap:6px">${avatar(u,24,9)}${u.name}</div></td>`:''}
+      <td><span class="badge ${r.tipo}">${r.tipo==='registro'?'Registro':'Operación'}</span></td>
+      <td><span class="badge ${r.modalidad==='presencial'?'drive':'web'}">${r.modalidad==='presencial'?'🏢 Presencial':'💻 Virtual'}</span></td>
+      <td>${fmt(r.fecha)}</td>
+      <td>${dayChip(r)}</td>
+      <td><span class="days-chip ${validation.cls}">${validation.label}</span></td>
+      <td><span class="badge ${r.plataforma}">${r.plataforma==='drive'?'📁 Drive':'🌐 Web'}</span></td>
+      ${!isEmployee()?`<td>${fmtDateTime(r.createdAt)}</td>`:''}
+      <td style="color:var(--text2);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.rejectedAt&&r.rejectionReason?r.rejectionReason:(r.notas||'—')}</td>
+      <td><button class="action-btn" data-edit="${r.id}">${isApprovalLocked(r)?'👁️ Ver':'✏️ Editar'}</button></td>
+    </tr>`;
+  });
+  if(!rr.length) h+=`<tr><td colspan="${isEmployee()?'10':'12'}"><div class="empty-state"><div class="es-icon">📭</div><p>Sin resultados con estos filtros</p></div></td></tr>`;
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderAlertas(){
+  const base=isEmployee()?RECORDS.filter(r=>r.userId===state.currentUser.id):getVisibleRecords();
+  const dups=getDups(base);
+  const warns=base.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)===WARN_DAY);
+  const expired=base.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)>EXPIRE_DAY);
+  const dupRecs=base.filter(r=>dups.has(r.id));
+  const t=state.alertTab;
+  const show=t==='expired'?expired:t==='dups'?dupRecs:warns;
+
+  let h=`<div class="page-header"><div class="page-title">Centro de Alertas</div><div class="page-sub">${isEmployee()?'Tus clientes que requieren atención inmediata':'Clientes visibles que requieren atención inmediata'}</div></div>`;
+  if(warns.length>0) h+=`<div class="alert-banner"><div class="ab-icon">⚠️</div><div class="ab-text"><strong>¡Urgente! ${warns.length} cliente(s) en día 6</strong> — mañana vence el plazo de 7 días.${isEmployee()?' Actualiza si ya hicieron la operación.':' Revisa con el usuario correspondiente.'}</div></div>`;
+  h+=`<div class="tabs">
+    <div class="tab${t==='warn'?' active':''}" data-atab="warn">⏰ Día 6 (${warns.length})</div>
+    <div class="tab${t==='expired'?' active':''}" data-atab="expired">⛔ Expirados (${expired.length})</div>
+    <div class="tab${t==='dups'?' active':''}" data-atab="dups">🔴 Duplicados (${Math.round(dups.size/2)||0})</div>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>DNI</th>${!isEmployee()?'<th>Atención al cliente</th>':''}<th>Fecha Registro</th><th>Días</th><th>Modalidad</th><th>Plataforma</th></tr></thead><tbody>`;
+  show.forEach(r=>{
+    const u=getUserById(r.userId);
+    const d=daysSince(r.fecha);
+    h+=`<tr><td>${r.cliente||'—'}</td><td><span style="font-family:var(--font2);font-weight:600">${r.dni}</span></td>
+      ${!isEmployee()?`<td><div style="display:flex;align-items:center;gap:6px">${avatar(u,24,9)}${u.name}</div></td>`:''}
+      <td>${fmt(r.fecha)}</td>
+      <td><span class="days-chip ${d>7?'expired':'danger'}">Día ${d}</span></td>
+      <td><span class="badge ${r.modalidad==='presencial'?'drive':'web'}">${r.modalidad==='presencial'?'🏢 Presencial':'💻 Virtual'}</span></td>
+      <td><span class="badge ${r.plataforma}">${r.plataforma==='drive'?'📁 Drive':'🌐 Web'}</span></td></tr>`;
+  });
+  if(!show.length) h+=`<tr><td colspan="${isEmployee()?'6':'7'}"><div class="empty-state"><div class="es-icon">✅</div><p>¡Sin alertas en esta categoría!</p></div></td></tr>`;
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderAdmin(){
+  const visibleUsers=getVisibleUsers();
+  let h=`<div class="page-header"><div class="page-title">${isAdmin()?'Administración':'Mi Equipo'}</div><div class="page-sub">${isAdmin()?'Gestión total del equipo y sedes':`Gestión de atención al cliente de sede ${userSede(state.currentUser)}`}</div></div>
+  <div class="tabs">
+    <div class="tab${state.adminTab!=='add'?' active':''}" data-atab2="users">👥 Equipo</div>
+    <div class="tab${state.adminTab==='add'?' active':''}" data-atab2="add">➕ Nueva atención al cliente</div>
+  </div>`;
+  if(state.adminTab==='add'){
+    h+=`<div class="form-card"><div class="form-grid">
+      <div class="form-group"><label class="form-label">Nombre completo</label><input class="form-input" id="an" placeholder="Nombre Apellido"/></div>
+      <div class="form-group"><label class="form-label">Usuario</label><input class="form-input" id="au" placeholder="usuario"/></div>
+      <div class="form-group"><label class="form-label">Contraseña</label><input class="form-input" id="ap" type="password" placeholder="contraseña"/></div>
+      <div class="form-group"><label class="form-label">Rol</label><select class="form-select" id="ar">${isAdmin()?'<option value="employee">Atención al cliente</option><option value="manager">Jefe de sede</option>':'<option value="employee">Atención al cliente</option>'}</select></div>
+      <div class="form-group"><label class="form-label">Sede</label><select class="form-select" id="as">${(isAdmin()?SEDES:[userSede(state.currentUser)]).map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div>
+    </div><button class="submit-btn" id="saveUserBtn">Crear atención al cliente</button></div>`;
+  } else {
+    if(isAdmin()){
+      h+=`<div class="form-card" style="margin-bottom:1.5rem"><div class="form-grid">
+        <div class="form-group"><label class="form-label">Comisión por registro válido</label><input class="form-input" id="commissionRate" type="number" min="0" step="0.01" value="${getCommissionRate().toFixed(2)}"/></div>
+        <div class="form-group"><label class="form-label">Aplica para</label><input class="form-input" value="Atención al cliente y jefes de sede" disabled/></div>
+      </div><button class="submit-btn" id="saveCommissionBtn">Guardar comisión</button></div>`;
+    }
+    if(isAdmin()){
+      h+=`<div class="form-card" style="margin-bottom:1.5rem"><div class="form-grid">
+        <div class="form-group"><label class="form-label">Contraseña actual</label><input class="form-input" id="adminCurrentPass" type="password" placeholder="Contraseña actual"/></div>
+        <div class="form-group"><label class="form-label">Nueva contraseña</label><input class="form-input" id="adminNewPass" type="password" placeholder="Mínimo 6 caracteres"/></div>
+        <div class="form-group"><label class="form-label">Repetir nueva contraseña</label><input class="form-input" id="adminRepeatPass" type="password" placeholder="Repite la nueva contraseña"/></div>
+      </div><button class="submit-btn" id="saveAdminPasswordBtn">Cambiar contraseña de admin</button></div>`;
+    }
+    h+=`<div class="users-grid">`;
+    visibleUsers.filter(u=>u.id!==state.currentUser.id||isAdmin()).filter(u=>u.role!=='admin' || isAdmin()).forEach(u=>{
+      const userRecords=getVisibleRecords().filter(r=>r.userId===u.id);
+      const o=userRecords.filter(r=>!!r.validatedAt).length;
+      const pv=userRecords.filter(r=>isPendingApproval(r)).length;
+      const rr=userRecords.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)<=EXPIRE_DAY).length;
+      const c=calcUserCommission(u);
+      h+=`<div class="user-card"><div class="uc-top">${avatar(u,40,14)}<div><div class="uc-name">${u.name}</div><div class="uc-username">@${u.username}</div></div></div>
+        <div class="uc-stat"><span>Rol</span><span>${u.role==='manager'?'Jefe de sede':u.role==='admin'?'Admin general':'Atención al cliente'}</span></div>
+        <div class="uc-stat"><span>Sede</span><span>${userSede(u)}</span></div>
+        <div class="uc-stat"><span>Operaciones validadas</span><span style="color:var(--green)">${o}</span></div>
+        <div class="uc-stat"><span>Pendientes aprobación</span><span style="color:var(--amber)">${pv}</span></div>
+        <div class="uc-stat"><span>Registros pendientes</span><span style="color:var(--amber)">${rr}</span></div>
+        <div class="uc-stat"><span>Comisiones</span><span style="color:var(--green)">S/ ${c.toFixed(2)}</span></div>
+        <div style="margin-top:10px;display:flex;gap:6px">
+          ${canManageUser(u)?`<button class="btn-sm" data-eu="${u.id}">Editar</button><button class="btn-sm danger" data-del="${u.id}">Eliminar</button><button class="btn-sm" data-rp="${u.id}" title="Cambiar contraseña">Reset pass</button>`:''}
+        </div></div>`;
+    });
+    h+='</div>';
+  }
+  return h;
+}
+
+function renderReportes(){
+  const reportUsers=getReportableUsers();
+  const reportRecords=getReportRecords();
+  const summaryUsers=getReportSummaryUsers();
+  const totalCommission=state.reportMode==='all'
+    ? summaryUsers.reduce((sum,u)=>sum+calcUserCommission(u),0)
+    : (reportUsers.find(u=>u.id==state.reportUser)?calcUserCommission(reportUsers.find(u=>u.id==state.reportUser)):0);
+  let h=`<div class="page-header"><div class="page-title">Reportes</div><div class="page-sub">Genera un PDF con la misma lógica del sistema y sus comisiones validadas</div></div>
+  <div class="form-card" style="margin-bottom:1.25rem">
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Tipo de reporte</label><select class="form-select" id="reportMode"><option value="all"${state.reportMode==='all'?' selected':''}>Todo el equipo</option><option value="user"${state.reportMode==='user'?' selected':''}>Por atención al cliente</option></select></div>
+      ${state.reportMode==='user'?`<div class="form-group"><label class="form-label">Atención al cliente</label><select class="form-select" id="reportUser"><option value="">Selecciona una atención al cliente</option>${reportUsers.map(u=>`<option value="${u.id}"${state.reportUser==u.id?' selected':''}>${u.name} · ${userSede(u)}</option>`).join('')}</select></div>`:''}
+      <div class="form-group"><label class="form-label">Registros válidos</label><input class="form-input" disabled value="${reportRecords.length}"/></div>
+      <div class="form-group"><label class="form-label">Comisión total</label><input class="form-input" disabled value="S/ ${totalCommission.toFixed(2)}"/></div>
+    </div>
+    <div style="margin-top:1rem;display:flex;justify-content:flex-end"><button class="btn-primary" id="exportPdfBtn" style="width:auto;padding:12px 20px">Descargar reporte PDF</button></div>
+  </div>`;
+  if(state.reportMode==='all'){
+    h+=`<div class="table-wrap"><div class="table-header"><div class="table-title">Resumen por atención al cliente</div></div>
+    <table><thead><tr><th>Atención al cliente</th><th>Rol</th><th>Sede</th><th>Registros validados</th><th>Comisión total</th></tr></thead><tbody>`;
+    summaryUsers.forEach(u=>{
+      const count=getCommissionableRecordsForUser(u).length;
+      h+=`<tr><td>${u.name}</td><td>${u.role==='manager'?'Jefe de sede':'Atención al cliente'}</td><td>${userSede(u)}</td><td>${count}</td><td style="color:var(--green);font-weight:700">S/ ${calcUserCommission(u).toFixed(2)}</td></tr>`;
+    });
+    if(!summaryUsers.length) h+=`<tr><td colspan="5"><div class="empty-state"><div class="es-icon">📄</div><p>No hay comisiones validadas para exportar.</p></div></td></tr>`;
+    h+='</tbody></table></div>';
+  }
+  h+=`<div class="table-wrap"><div class="table-header"><div class="table-title">${state.reportMode==='all'?'Detalle consolidado':'Detalle del usuario'}</div></div>
+  <table><thead><tr><th>Cliente</th><th>DNI</th>${state.reportMode==='all'?'<th>Atención al cliente</th><th>Sede</th>':''}<th>Registro</th><th>Operación</th><th>Validado</th><th>Modalidad</th><th>Plataforma</th><th>Comisión</th></tr></thead><tbody>`;
+  reportRecords.forEach(r=>{
+    const u=getUserById(r.userId);
+    h+=`<tr><td>${r.cliente||'—'}</td><td>${r.dni}</td>${state.reportMode==='all'?`<td>${u.name}</td><td>${userSede(u)}</td>`:''}<td>${fmt(r.fecha)}</td><td>${fmt(r.fechaOperacion)}</td><td>${fmt(r.validatedAt)}</td><td>${r.modalidad==='presencial'?'Presencial':'Virtual'}</td><td>${r.plataforma==='drive'?'Drive':'Web'}</td><td style="color:var(--green);font-weight:700">S/ ${getCommissionRate().toFixed(2)}</td></tr>`;
+  });
+  if(!reportRecords.length) h+=`<tr><td colspan="${state.reportMode==='all'?10:8}"><div class="empty-state"><div class="es-icon">📄</div><p>No hay registros validados para este reporte.</p></div></td></tr>`;
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderMisRegistros(){
+  const u=state.currentUser;
+  const dups=getDups(RECORDS);
+  let rr=RECORDS.filter(r=>r.userId===u.id);
+  if(state.ft){ const q=state.ft.toLowerCase(); rr=rr.filter(r=>r.dni.includes(state.ft)||(r.cliente||'').toLowerCase().includes(q)); }
+  if(state.fTipo) rr=rr.filter(r=>r.tipo===state.fTipo);
+  if(state.fDesde) rr=rr.filter(r=>r.fecha>=state.fDesde);
+  if(state.fHasta) rr=rr.filter(r=>r.fecha<=state.fHasta);
+  rr.sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const alerts=rr.filter(r=>r.tipo==='registro'&&daysSince(r.fecha)===WARN_DAY);
+  const pendingApproval=rr.filter(r=>isPendingApproval(r));
+
+  let h=`<div class="page-header"><div class="page-title">Mis Registros</div><div class="page-sub">Tus clientes y su estado de comisión</div></div>`;
+  if(alerts.length>0) h+=`<div class="alert-banner"><div class="ab-icon">⚠️</div><div class="ab-text"><strong>${alerts.length} cliente(s) en día 6</strong> — ¡mañana vence el plazo! Actualiza si ya hicieron la operación.</div></div>`;
+  if(pendingApproval.length>0) h+=`<div class="alert-banner"><div class="ab-icon">✅</div><div class="ab-text"><strong>${pendingApproval.length} registro(s) pendientes de aprobación</strong> — tu cliente operó dentro de los 7 días y ahora queda esperando la validación.</div></div>`;
+  h+=`<div style="margin-bottom:1rem;display:flex;justify-content:flex-end"><button class="btn-sm success" id="goNuevo">➕ Nuevo registro</button></div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">Mis registros (${rr.length})</div>
+      <input class="search-input" id="ft" placeholder="🔍 Buscar DNI o nombre..." value="${state.ft}" style="width:180px"/>
+      <select class="filter-select" id="ftp"><option value="">Todos</option><option value="registro"${state.fTipo==='registro'?' selected':''}>Registro</option><option value="operacion"${state.fTipo==='operacion'?' selected':''}>Operación</option></select>
+      <input class="search-input" id="fd" type="date" value="${state.fDesde}" style="width:130px" title="Desde"/>
+      <input class="search-input" id="fh" type="date" value="${state.fHasta}" style="width:130px" title="Hasta"/>
+    </div>
+    <table><thead><tr><th>Cliente</th><th>DNI</th><th>Tipo</th><th>Modalidad</th><th>Fecha</th><th>Estado</th><th>Aprobación</th><th>Plataforma</th><th>Comisión</th><th>Notas</th><th></th></tr></thead><tbody>`;
+  rr.forEach(r=>{
+    const dup=dups.has(r.id);
+    const d=recordAge(r);
+    const isAlert=r.tipo==='registro'&&d===WARN_DAY;
+    const validation=validationText(r);
+    const comm=r.validatedAt?`<span style="color:var(--green);font-weight:700">+S/ ${getCommissionRate().toFixed(2)}</span>`:r.rejectedAt?`<span style="color:var(--red);font-size:11px">Rechazado</span>`:isPendingApproval(r)?`<span style="color:var(--amber);font-size:11px">Pendiente de aprobación</span>`:d>EXPIRE_DAY?`<span style="color:var(--red);font-size:11px">Sin comisión</span>`:`<span style="color:var(--text3);font-size:11px">Pendiente</span>`;
+    h+=`<tr class="${dup?'dup-row':isAlert?'alert-row':''}">
+      <td>${r.cliente||'—'}</td>
+      <td><span style="font-family:var(--font2);font-weight:600">${r.dni}</span>${dup?' <span class="badge dup">DUP</span>':''}</td>
+      <td><span class="badge ${r.tipo}">${r.tipo==='registro'?'Registro':'Operación'}</span></td>
+      <td><span class="badge ${r.modalidad==='presencial'?'drive':'web'}">${r.modalidad==='presencial'?'🏢 Presencial':'💻 Virtual'}</span></td>
+      <td>${fmt(r.fecha)}</td>
+      <td>${dayChip(r)}</td>
+      <td><span class="days-chip ${validation.cls}">${validation.label}</span></td>
+      <td><span class="badge ${r.plataforma}">${r.plataforma==='drive'?'📁 Drive':'🌐 Web'}</span></td>
+      <td>${comm}</td>
+      <td style="color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.rejectedAt&&r.rejectionReason?r.rejectionReason:(r.notas||'—')}</td>
+      <td><button class="action-btn" data-edit="${r.id}">${isApprovalLocked(r)?'👁️':'✏️'}</button></td>
+    </tr>`;
+  });
+  if(!rr.length) h+=`<tr><td colspan="11"><div class="empty-state"><div class="es-icon">📭</div><p>Sin registros. ¡Sube tu primero!</p></div></td></tr>`;
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderNuevo(){
+  const today=new Date().toISOString().split('T')[0];
+  return `<div class="form-card">
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Nombre del Cliente *</label><input class="form-input" id="nc" placeholder="Nombre completo"/></div>
+      <div class="form-group"><label class="form-label">DNI del Cliente *</label><input class="form-input" id="nd" placeholder="12345678" maxlength="15"/></div>
+      <div class="form-group"><label class="form-label">Fecha de Registro *</label><input class="form-input" id="nf" type="date" value="${today}"/></div>
+      <div class="form-group"><label class="form-label">Tipo *</label>
+        <select class="form-select" id="nt">
+          <option value="registro">Registro (pendiente de operación)</option>
+          <option value="operacion">Operación (ya efectivizó)</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Fecha de Operación</label><input class="form-input" id="no" type="date" value=""/></div>
+      <div class="form-group"><label class="form-label">Modalidad *</label>
+        <select class="form-select" id="nm">
+          <option value="virtual">💻 Virtual</option>
+          <option value="presencial">🏢 Presencial</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Dónde se subió *</label>
+        <select class="form-select" id="np">
+          <option value="web">🌐 Página Web</option>
+          <option value="drive">📁 Google Drive</option>
+        </select>
+      </div>
+      <div class="form-group full"><label class="form-label">Notas (opcional)</label><input class="form-input" id="nn" placeholder="Cualquier anotación adicional..."/></div>
+    </div>
+    <div id="nerr" style="font-size:12px;color:var(--red);margin-top:10px;display:none"></div>
+    <button class="submit-btn" id="nsub">Guardar Registro</button>
+  </div>`;
+}
+
+function renderNuevoModal(){
+  return `<div class="modal-overlay" id="noverlay">
+    <div class="modal" style="max-width:620px">
+      <h3>➕ Nuevo Registro</h3>
+      ${renderNuevo()}
+      <div class="modal-actions">
+        <button class="btn-cancel" id="nclose">Cancelar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function syncNuevoForm(){
+  const tipoNuevo=document.getElementById('nt');
+  const fechaOpNueva=document.getElementById('no');
+  if(tipoNuevo&&fechaOpNueva){
+    const run=()=>{
+      if(tipoNuevo.value==='registro') fechaOpNueva.value='';
+    };
+    tipoNuevo.onchange=run;
+    run();
+  }
+}
+
+async function submitNuevoRegistro(){
+  if(NEW_RECORD_SUBMITTING) return;
+  const c=document.getElementById('nc')?.value.trim()||'';
+  const d=document.getElementById('nd')?.value.trim()||'';
+  const f=document.getElementById('nf')?.value||'';
+  const fo=document.getElementById('no')?.value||'';
+  const err=document.getElementById('nerr');
+  const submitBtn=document.getElementById('nsub');
+  const tipoSelect=document.getElementById('nt');
+  const t=fo?'operacion':(tipoSelect?tipoSelect.value:'registro');
+  if(!err) return;
+  if(!c){ err.textContent='El nombre del cliente es obligatorio'; err.style.display='block'; return; }
+  if(!d||d.length<6){ err.textContent='El DNI debe tener al menos 6 caracteres'; err.style.display='block'; return; }
+  if(!f){ err.textContent='La fecha es obligatoria'; err.style.display='block'; return; }
+  NEW_RECORD_SUBMITTING = true;
+  if(submitBtn){
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Guardando...';
+    submitBtn.style.opacity = '0.7';
+    submitBtn.style.cursor = 'wait';
+  }
+  try{
+    await apiFetch('/api/records', {
+      method:'POST',
+      body:JSON.stringify({
+        clientName:c,
+        dni:d,
+        registrationDate:f,
+        operationDate:t==='operacion' ? fo || null : null,
+        type:localToType(t),
+        mode:localToMode(document.getElementById('nm').value),
+        uploadPlatform:localToPlatform(document.getElementById('np').value),
+        notes:document.getElementById('nn').value.trim() || null
+      })
+    });
+    await refreshState();
+    state.newModal=false;
+    state.view='mis-registros';
+    render();
+  }catch(error){
+    err.textContent=error.message || 'No se pudo guardar el registro';
+    err.style.display='block';
+  } finally {
+    NEW_RECORD_SUBMITTING = false;
+    if(submitBtn){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Registro';
+      submitBtn.style.opacity = '';
+      submitBtn.style.cursor = '';
+    }
+  }
+}
+
+function renderMisComisiones(){
+  const u=state.currentUser;
+  const my=isManager()?getCommissionableRecordsForUser(u):RECORDS.filter(r=>r.userId===u.id);
+  const ops=my.filter(r=>!!r.validatedAt);
+  const opsPending=isManager()?[]:my.filter(r=>isPendingApproval(r));
+  const regs=isManager()?[]:my.filter(r=>r.tipo==='registro');
+  const expired=regs.filter(r=>daysSince(r.fecha)>EXPIRE_DAY);
+  const pending=regs.filter(r=>daysSince(r.fecha)<=EXPIRE_DAY);
+  const total=calcUserCommission(u);
+
+  let h=`<div class="page-header"><div class="page-title">Mis Comisiones</div><div class="page-sub">Resumen de lo que has ganado y lo que podrías ganar</div></div>
+  <div class="commission-big">
+    <div class="comm-label">💰 Total comisiones ganadas</div>
+    <div class="comm-value">S/ ${total.toFixed(2)}</div>
+    <div class="comm-sub">${ops.length} registro${ops.length===1?'':'s'} válido${ops.length===1?'':'s'} × S/ ${getCommissionRate().toFixed(2)} cada uno</div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Operaciones validadas</div><div class="stat-value green">${ops.length}</div><div class="stat-sub">S/ ${total.toFixed(2)} ganados</div></div>
+    <div class="stat-card"><div class="stat-label">Pendientes de aprobación</div><div class="stat-value amber">${opsPending.length}</div><div class="stat-sub">Esperando revisión</div></div>
+    <div class="stat-card"><div class="stat-label">Registros en plazo</div><div class="stat-value amber">${pending.length}</div><div class="stat-sub">Potencial S/ ${(pending.length*getCommissionRate()).toFixed(2)}</div></div>
+    <div class="stat-card"><div class="stat-label">Registros expirados</div><div class="stat-value red">${expired.length}</div><div class="stat-sub">Sin comisión</div></div>
+  </div>
+  <div class="table-wrap"><div class="table-header"><div class="table-title">Detalle — Operaciones validadas</div></div>
+  <table><thead><tr><th>DNI</th><th>Registro</th><th>Operación</th><th>Modalidad</th><th>Plataforma</th><th>Comisión</th></tr></thead><tbody>`;
+  ops.forEach(r=>{ h+=`<tr><td><span style="font-family:var(--font2);font-weight:600">${r.dni}</span></td><td>${fmt(r.fecha)}</td><td>${fmt(r.fechaOperacion)}</td><td>${r.modalidad==='presencial'?'Presencial':'Virtual'}</td><td><span class="badge ${r.plataforma}">${r.plataforma==='drive'?'📁 Drive':'🌐 Web'}</span></td><td style="color:var(--green);font-weight:700;font-family:var(--font2)">+S/ ${getCommissionRate().toFixed(2)}</td></tr>`; });
+  if(!ops.length) h+=`<tr><td colspan="6"><div class="empty-state"><div class="es-icon">💰</div><p>Aún no tienes operaciones validadas. ¡Sigue adelante!</p></div></td></tr>`;
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function renderModal(){
+  const r=RECORDS.find(x=>x.id===state.modal);
+  if(!r || !canViewRecord(r)) return '';
+  const locked=isApprovalLocked(r);
+  const canEdit=(isAdmin()||r.userId===state.currentUser.id) && !locked;
+  const canEditMode=(isAdmin()||isManager()||r.userId===state.currentUser.id);
+  const canDelete=canDeleteRecord(r);
+  const dis=canEdit?'':'disabled';
+  const modeDis=canEditMode?'':'disabled';
+  const validation=validationText(r);
+  return `<div class="modal-overlay" id="moverlay">
+    <div class="modal">
+      <h3>${canEdit?'✏️ Editar Registro':'👁️ Ver Registro'} — DNI ${r.dni}</h3>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nombre del Cliente</label><input class="form-input" id="ec" value="${r.cliente||''}" disabled/></div>
+        <div class="form-group"><label class="form-label">DNI</label><input class="form-input" id="ed" value="${r.dni}" disabled/></div>
+        <div class="form-group"><label class="form-label">Fecha de Registro</label><input class="form-input" type="date" id="ef" value="${r.fecha}" disabled/></div>
+        <div class="form-group"><label class="form-label">Tipo</label>
+          <select class="form-select" id="et" ${dis}>
+            <option value="registro"${r.tipo==='registro'?' selected':''}>Registro</option>
+            <option value="operacion"${r.tipo==='operacion'?' selected':''}>Operación</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Fecha de Operación</label><input class="form-input" type="date" id="eo" value="${r.fechaOperacion||''}" ${dis}/></div>
+        <div class="form-group"><label class="form-label">Modalidad</label>
+          <select class="form-select" id="em" ${modeDis}>
+            <option value="virtual"${r.modalidad==='virtual'?' selected':''}>💻 Virtual</option>
+            <option value="presencial"${r.modalidad==='presencial'?' selected':''}>🏢 Presencial</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Plataforma</label>
+          <select class="form-select" id="ep" ${dis}>
+            <option value="web"${r.plataforma==='web'?' selected':''}>🌐 Web</option>
+            <option value="drive"${r.plataforma==='drive'?' selected':''}>📁 Drive</option>
+          </select>
+        </div>
+        <div class="form-group full"><label class="form-label">Notas</label><input class="form-input" id="en" value="${r.notas}" ${dis}/></div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text2)">Estado de validación: <span class="days-chip ${validation.cls}">${validation.label}</span></div>
+      ${r.rejectedAt&&r.rejectionReason?`<div style="margin-top:8px;font-size:12px;color:var(--red)">Motivo de rechazo: ${r.rejectionReason}</div>`:''}
+      ${state.currentUser.role==='admin'?`<div style="margin-top:8px;font-size:12px;color:var(--text2)">Subido: ${fmtDateTime(r.createdAt)}</div>`:''}
+      <div class="modal-actions">
+        <button class="btn-cancel" id="mclose">Cancelar</button>
+        ${canDelete?`<button class="btn-sm danger" id="mdel">Eliminar</button>`:''}
+        ${canValidateOrReject(r)?`<button class="btn-sm danger" id="mreject">Rechazar</button><button class="btn-sm success" id="mvalidate">Validar</button>`:''}
+        ${(canEdit || canEditMode)?`<button class="btn-primary" id="msave" style="width:auto;padding:9px 20px">Guardar</button>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// BIND
+function bindApp(){
+  document.querySelectorAll('[data-nav]').forEach(el=>{
+    el.onclick=async()=>{
+      state.view=el.dataset.nav;
+      state.newModal=false; state.attendanceEdit=null;
+      state.ft=''; state.fUser=''; state.fTipo=''; state.fDesde=''; state.fHasta=''; state.fApproval=''; state.fSede='';
+      state.attendanceSearch=''; state.attendanceDate=''; state.attendancePerson='';
+      state.attendanceTab='resumen';
+      state.adminTab='users'; state.alertTab='warn';
+      render();
+      if(state.view==='asistencia' && isAdmin() && !ATTENDANCE_LOADING){
+        await loadAttendance();
+      }
+    };
+  });
+  const lb=document.getElementById('logoutBtn');
+  if(lb) lb.onclick=async()=>{
+    stopAutoRefresh();
+    showBusy('Cerrando sesión...');
+    try{
+      await fetch('/api/auth/logout', { method:'POST', credentials:'same-origin' });
+    } finally {
+      hideBusy();
+    }
+    state.currentUser=null;
+    state.resetUserId=null;
+    state.sessionPassword='';
+    state.view='login';
+    render();
+  };
+
+  // filters
+  const bindFilter=(id,key)=>{ const el=document.getElementById(id); if(el) el.oninput=el.onchange=()=>{ state[key]=el.value; render(); }; };
+  bindFilter('ft','ft'); bindFilter('fu','fUser'); bindFilter('ftp','fTipo');
+  bindFilter('fap','fApproval'); bindFilter('fs','fSede');
+  bindFilter('fd','fDesde'); bindFilter('fh','fHasta');
+  bindFilter('attendanceSearch','attendanceSearch');
+  bindFilter('attendanceDate','attendanceDate');
+  bindFilter('attendancePerson','attendancePerson');
+  document.querySelectorAll('[data-attendance-tab]').forEach(el=>{ el.onclick=()=>{ state.attendanceTab=el.dataset.attendanceTab; render(); }; });
+  const reportModeEl=document.getElementById('reportMode');
+  if(reportModeEl) reportModeEl.onchange=()=>{
+    state.reportMode=reportModeEl.value;
+    if(state.reportMode==='all') state.reportUser='';
+    render();
+  };
+  const reportUserEl=document.getElementById('reportUser');
+  if(reportUserEl) reportUserEl.onchange=()=>{ state.reportUser=reportUserEl.value; render(); };
+
+  // alert tabs
+  document.querySelectorAll('[data-atab]').forEach(el=>{ el.onclick=()=>{ state.alertTab=el.dataset.atab; render(); }; });
+  document.querySelectorAll('[data-atab2]').forEach(el=>{ el.onclick=()=>{ state.adminTab=el.dataset.atab2; render(); }; });
+
+  // edit btns
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.onclick=()=>{ state.modal=parseInt(el.dataset.edit); render(); }; });
+  document.querySelectorAll('[data-validate]').forEach(el=>{ el.onclick=async()=>{ await validateRecord(parseInt(el.dataset.validate)); render(); }; });
+  document.querySelectorAll('[data-reject]').forEach(el=>{ el.onclick=async()=>{ const reason=prompt('Motivo del rechazo:'); if(reason&&reason.trim()){ await rejectRecord(parseInt(el.dataset.reject), reason.trim()); render(); } }; });
+
+  // go nuevo
+  const gn=document.getElementById('goNuevo');
+  if(gn) gn.onclick=()=>{ state.newModal=true; render(); };
+
+  // admin: save user
+  const su=document.getElementById('saveUserBtn');
+  if(su) su.onclick=async()=>{
+    if(!canManageUsers()) return;
+    const n=document.getElementById('an').value.trim();
+    const u=document.getElementById('au').value.trim();
+    const p=document.getElementById('ap').value.trim();
+    const role=document.getElementById('ar').value;
+    const sede=isAdmin()?document.getElementById('as').value:userSede(state.currentUser);
+    if(!n||!u||!p) return;
+    if(!canManageUserRole(role)) return;
+    try{
+      await apiFetch('/api/users', {
+        method:'POST',
+        body:JSON.stringify({ name:n, username:u, password:p, role:localToRole(role), sede })
+      });
+      await refreshState();
+      state.adminTab='users';
+      render();
+    }catch(error){
+      alert(error.message || 'No se pudo crear la atención al cliente.');
+    }
+  };
+
+  const sc=document.getElementById('saveCommissionBtn');
+  if(sc) sc.onclick=async()=>{
+    const rate=Number(document.getElementById('commissionRate').value);
+    if(Number.isNaN(rate) || rate<0) return;
+    try{
+      await apiFetch('/api/settings/commission', {
+        method:'POST',
+        body:JSON.stringify({ commissionPerRecord: rate })
+      });
+      await refreshState();
+      render();
+    }catch(error){
+      alert(error.message || 'No se pudo guardar la comisión.');
+    }
+  };
+
+  const sap=document.getElementById('saveAdminPasswordBtn');
+  if(sap) sap.onclick=async()=>{
+    const current=document.getElementById('adminCurrentPass').value;
+    const next=document.getElementById('adminNewPass').value;
+    const repeat=document.getElementById('adminRepeatPass').value;
+    try{
+      await apiFetch('/api/settings/password', {
+        method:'POST',
+        body:JSON.stringify({ currentPassword:current, newPassword:next, repeatPassword:repeat })
+      });
+      state.sessionPassword=next;
+      await refreshState();
+      alert('Contraseña de admin actualizada.');
+      render();
+    }catch(error){
+      alert(error.message || 'No se pudo cambiar la contraseña.');
+    }
+  };
+
+  document.querySelectorAll('[data-eu]').forEach(el=>{
+    el.onclick=async()=>{
+      const user=USERS.find(x=>x.id==el.dataset.eu);
+      if(!user || !canManageUser(user)) return;
+      const newName=prompt('Editar nombre:', user.name);
+      if(!newName) return;
+      let role=user.role;
+      let sede=user.sede;
+      if(isAdmin()){
+        const newRole=prompt('Rol (manager o employee):', user.role);
+        if(newRole==='manager' || newRole==='employee') role=newRole;
+        const newSede=prompt(`Sede (${SEDES.join(', ')}):`, user.sede);
+        if(newSede && SEDES.includes(newSede)) sede=newSede;
+      }
+      try{
+        await apiFetch(`/api/users/${user.id}`, {
+          method:'PATCH',
+          body:JSON.stringify({ name:newName.trim()||user.name, role:localToRole(role), sede })
+        });
+        await refreshState();
+        render();
+      }catch(error){
+        alert(error.message || 'No se pudo editar la atención al cliente.');
+      }
+    };
+  });
+
+  // admin: delete user
+  document.querySelectorAll('[data-del]').forEach(el=>{
+    el.onclick=async()=>{ if(confirm('¿Eliminar esta atención al cliente?')){ try{ await apiFetch(`/api/users/${el.dataset.del}`, { method:'DELETE' }); await refreshState(); render(); }catch(error){ alert(error.message || 'No se pudo eliminar la atención al cliente.'); } } };
+  });
+
+  // admin: reset pass
+  document.querySelectorAll('[data-rp]').forEach(el=>{
+    el.onclick=async()=>{
+      const uid=parseInt(el.dataset.rp);
+      const np=prompt('Nueva contraseña:');
+      if(np){
+        try{
+          await apiFetch(`/api/users/${uid}/password`, {
+            method:'POST',
+            body:JSON.stringify({ password: np })
+          });
+          await refreshState();
+          alert('Contraseña actualizada');
+          render();
+        }catch(error){
+          alert(error.message || 'No se pudo cambiar la contraseña.');
+        }
+      }
+    };
+  });
+
+  const exportBtn=document.getElementById('exportPdfBtn');
+  if(exportBtn) exportBtn.onclick=()=>{
+    if(state.reportMode==='user' && !state.reportUser){
+      alert('Selecciona una atención al cliente para descargar el reporte individual.');
+      return;
+    }
+    const records=getReportRecords();
+    const summaryUsers=getReportSummaryUsers();
+    const selectedUser=getReportableUsers().find(u=>u.id==state.reportUser);
+    const totalCommission=state.reportMode==='all'
+      ? summaryUsers.reduce((sum,u)=>sum+calcUserCommission(u),0)
+      : (selectedUser?calcUserCommission(selectedUser):0);
+    const rows=records.map(r=>{
+      const u=getUserById(r.userId);
+      return `<tr><td>${r.cliente||'—'}</td><td>${r.dni}</td>${state.reportMode==='all'?`<td>${u.name}</td><td>${userSede(u)}</td>`:''}<td>${fmt(r.fecha)}</td><td>${fmt(r.fechaOperacion)}</td><td>${fmt(r.validatedAt)}</td><td>${r.modalidad==='presencial'?'Presencial':'Virtual'}</td><td>${r.plataforma==='drive'?'Drive':'Web'}</td><td>S/ ${getCommissionRate().toFixed(2)}</td></tr>`;
+    }).join('');
+    const summaryRows=summaryUsers.map(u=>`<tr><td>${u.name}</td><td>${u.role==='manager'?'Jefe de sede':'Atención al cliente'}</td><td>${userSede(u)}</td><td>${getCommissionableRecordsForUser(u).length}</td><td>S/ ${calcUserCommission(u).toFixed(2)}</td></tr>`).join('');
+    const title=state.reportMode==='all'?'Reporte General de Comisiones':'Reporte Individual de Comisiones';
+    const subtitle=state.reportMode==='all'
+      ? `Consolidado de usuarios visibles para ${state.currentUser.name}`
+      : `Detalle de ${selectedUser?.name||'Atención al cliente'} · ${selectedUser?userSede(selectedUser):''}`;
+    const w=window.open('','_blank');
+    if(!w) return;
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;padding:28px;color:#14213d;background:#f7f9fc}h1{margin:0 0 6px;font-size:28px;color:#0f172a}p{margin:0;color:#475569}.hero{background:#111827;color:#fff;border-radius:18px;padding:24px 26px;margin-bottom:20px}.hero p{color:#cbd5e1}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 22px}.card{background:#fff;border:1px solid #dbe3f0;border-radius:14px;padding:16px}.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:8px}.value{font-size:22px;font-weight:700;color:#0f172a}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{border:1px solid #dbe3f0;padding:10px;font-size:12px;text-align:left}th{background:#eaf0ff;color:#334155}h2{font-size:16px;margin:24px 0 10px;color:#0f172a}@media print{body{background:#fff;padding:0}.hero{break-inside:avoid}.card,table{break-inside:avoid}}</style></head><body><div class="hero"><h1>LINCE · ${title}</h1><p>${subtitle}</p><p>Generado por ${state.currentUser.name} · Sede ${userSede(state.currentUser)} · ${new Date().toLocaleString()}</p></div><div class="grid"><div class="card"><div class="label">Modo</div><div class="value">${state.reportMode==='all'?'General':'Individual'}</div></div><div class="card"><div class="label">Registros validados</div><div class="value">${records.length}</div></div><div class="card"><div class="label">Comisión total</div><div class="value">S/ ${totalCommission.toFixed(2)}</div></div></div>${state.reportMode==='all'?`<h2>Resumen por atención al cliente</h2><table><thead><tr><th>Atención al cliente</th><th>Rol</th><th>Sede</th><th>Registros validados</th><th>Comisión total</th></tr></thead><tbody>${summaryRows||'<tr><td colspan="5">Sin comisiones validadas.</td></tr>'}</tbody></table>`:''}<h2>${state.reportMode==='all'?'Detalle consolidado':'Detalle de atención al cliente'}</h2><table><thead><tr><th>Cliente</th><th>DNI</th>${state.reportMode==='all'?'<th>Atención al cliente</th><th>Sede</th>':''}<th>Registro</th><th>Operación</th><th>Validado</th><th>Modalidad</th><th>Plataforma</th><th>Comisión</th></tr></thead><tbody>${rows||`<tr><td colspan="${state.reportMode==='all'?10:8}">Sin registros validados.</td></tr>`}</tbody></table><script>window.onload=()=>window.print();<\/script></body></html>`);
+    w.document.close();
+  };
+
+  const attendanceRefresh=document.getElementById('attendanceRefresh');
+  if(attendanceRefresh) attendanceRefresh.onclick=async()=>{ await loadAttendance(true); };
+
+  document.querySelectorAll('[data-attendance-edit]').forEach(el=>{
+    el.onclick=()=>{
+      try{
+        state.attendanceEdit=JSON.parse(decodeURIComponent(el.dataset.attendanceEdit));
+        render();
+      }catch(error){
+        alert('No se pudo abrir la edición de asistencia.');
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-payroll-save]').forEach(el=>{
+    el.onclick=async()=>{
+      const personId=el.dataset.payrollSave;
+      const roleEl=document.querySelector(`[data-payroll-role="${personId}"]`);
+      const salaryEl=document.querySelector(`[data-payroll-salary="${personId}"]`);
+      if(!personId || !roleEl || !salaryEl) return;
+      try{
+        ATTENDANCE = await apiFetch('/api/attendance', {
+          method:'POST',
+          body:JSON.stringify({
+            action:'profile',
+            personId,
+            payrollRole: roleEl.value,
+            monthlySalary: Number(salaryEl.value || 0)
+          }),
+          busyMessage:'Guardando cargo y sueldo...'
+        });
+        ATTENDANCE_ERROR='';
+        preserveMainScroll(()=>render());
+      }catch(error){
+        alert(error.message || 'No se pudo guardar el cargo y sueldo.');
+      }
+    };
+  });
+}
+
+function bindAttendanceEditModal(){
+  const overlay=document.getElementById('aoverlay');
+  const close=document.getElementById('attendanceEditClose');
+  const save=document.getElementById('attendanceEditSave');
+  if(overlay) overlay.onclick=e=>{ if(e.target===overlay){ state.attendanceEdit=null; render(); } };
+  if(close) close.onclick=()=>{ state.attendanceEdit=null; render(); };
+  if(save) save.onclick=async()=>{
+    const item=state.attendanceEdit;
+    if(!item) return;
+    const entry=document.getElementById('attendanceEntryEdit')?.value?.trim();
+    const exit=document.getElementById('attendanceExitEdit')?.value?.trim();
+    if(!entry && !exit){
+      alert('Debes poner al menos una hora.');
+      return;
+    }
+    try{
+      if(entry){
+        ATTENDANCE = await apiFetch('/api/attendance', {
+          method:'POST',
+          body:JSON.stringify({ personId:item.personId, date:item.date, field:'entryTime', value:entry }),
+          busyMessage:'Guardando entrada manual...'
+        });
+      }
+      if(exit){
+        ATTENDANCE = await apiFetch('/api/attendance', {
+          method:'POST',
+          body:JSON.stringify({ personId:item.personId, date:item.date, field:'exitTime', value:exit }),
+          busyMessage:'Guardando salida manual...'
+        });
+      }
+      ATTENDANCE_ERROR='';
+      state.attendanceEdit=null;
+      render();
+    }catch(error){
+      alert(error.message || 'No se pudo guardar la asistencia.');
+    }
+  };
+}
+
+function bindModal(){
+  const ov=document.getElementById('moverlay');
+  const mc=document.getElementById('mclose');
+  const ms=document.getElementById('msave');
+  const md=document.getElementById('mdel');
+  const mv=document.getElementById('mvalidate');
+  const mr=document.getElementById('mreject');
+  const tipoEdit=document.getElementById('et');
+  const fechaOpEdit=document.getElementById('eo');
+  if(tipoEdit&&fechaOpEdit){
+    const syncEdit=()=>{
+      if(tipoEdit.value==='registro') fechaOpEdit.value='';
+    };
+    tipoEdit.onchange=syncEdit;
+  }
+  if(ov) ov.onclick=e=>{ if(e.target===ov){ state.modal=null; render(); } };
+  if(mc) mc.onclick=()=>{ state.modal=null; render(); };
+  if(ms) ms.onclick=async()=>{
+    if(EDIT_RECORD_SUBMITTING) return;
+    const current=RECORDS.find(r=>r.id===state.modal);
+    if(!current) return;
+    EDIT_RECORD_SUBMITTING = true;
+    ms.disabled = true;
+    ms.textContent = 'Guardando...';
+    ms.style.opacity = '0.7';
+    ms.style.cursor = 'wait';
+    const locked=isApprovalLocked(current);
+    const selectedTipo=document.getElementById('et').value;
+    const fechaOperacion=document.getElementById('eo').value;
+    const tipo=fechaOperacion?'operacion':selectedTipo;
+    if(!locked && selectedTipo==='operacion'&&!fechaOperacion){ alert('Debes indicar la fecha de operación para marcar este registro como operación.'); return; }
+    try{
+      await apiFetch(`/api/records/${state.modal}`, {
+        method:'PATCH',
+        body:JSON.stringify({
+          type:localToType(locked ? current.tipo : tipo),
+          operationDate:locked ? (current.fechaOperacion || null) : (tipo==='operacion'?fechaOperacion || null:null),
+          mode:localToMode(document.getElementById('em').value),
+          uploadPlatform:localToPlatform(locked ? current.plataforma : document.getElementById('ep').value),
+          notes:locked ? (current.notas || null) : (document.getElementById('en').value.trim() || null)
+        })
+      });
+      await refreshState();
+      state.modal=null;
+      render();
+    }catch(error){
+      alert(error.message || 'No se pudo guardar el registro.');
+    } finally {
+      EDIT_RECORD_SUBMITTING = false;
+      if(ms){
+        ms.disabled = false;
+        ms.textContent = 'Guardar';
+        ms.style.opacity = '';
+        ms.style.cursor = '';
+      }
+    }
+  };
+  if(mv) mv.onclick=async()=>{ await validateRecord(state.modal); state.modal=null; render(); };
+  if(mr) mr.onclick=async()=>{
+    const reason=prompt('Motivo del rechazo:');
+    if(reason&&reason.trim()){ await rejectRecord(state.modal, reason.trim()); state.modal=null; render(); }
+  };
+  if(md) md.onclick=async()=>{
+    const rec=RECORDS.find(r=>r.id===state.modal);
+    if(!canDeleteRecord(rec)) return;
+    if(confirm('¿Eliminar este registro?')){
+      try{
+        await apiFetch(`/api/records/${state.modal}`, { method:'DELETE' });
+        await refreshState();
+        state.modal=null;
+        render();
+      }catch(error){
+        alert(error.message || 'No se pudo eliminar el registro.');
+      }
+    }
+  };
+}
+
+function bindNuevoModal(){
+  const ov=document.getElementById('noverlay');
+  const close=document.getElementById('nclose');
+  const submit=document.getElementById('nsub');
+  syncNuevoForm();
+  if(ov) ov.onclick=e=>{ if(e.target===ov){ state.newModal=false; render(); } };
+  if(close) close.onclick=()=>{ state.newModal=false; render(); };
+  if(submit) submit.onclick=submitNuevoRegistro;
+}
+
+boot();
+
+</script>
+</body>
+</html>
+
+

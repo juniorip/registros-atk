@@ -1,0 +1,515 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum RecordType {
+  REGISTRO
+  OPERACION
+}
+
+enum UploadPlatform {
+  WEB
+  DRIVE
+}
+
+enum RecordMode {
+  VIRTUAL
+  PRESENCIAL
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+}
+
+enum PartTimeMode {
+  MORNING
+  AFTERNOON
+}
+
+enum AttendanceRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PenaltyReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum WrongCardStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CallReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RatingApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReferralBank {
+  BBVA
+  BCP
+  SCOTIABANK
+  INTERBANK
+}
+
+enum SafetypayBank {
+  CMR
+  IBK
+  IO
+}
+
+enum SafetypayCode {
+  ATK1
+  ATK50
+  ATK30
+}
+
+model User {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  username           String    @unique
+  dni                String?   @unique
+  passwordHash       String
+  role               UserRole
+  sede               String
+  forcePasswordReset Boolean   @default(false)
+  color              String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  records            Record[]  @relation("RecordOwner")
+  validatedRecords   Record[]  @relation("RecordValidator")
+  referrals          Referral[] @relation("ReferralOwner")
+  validatedReferrals Referral[] @relation("ReferralValidator")
+  wrongCards         WrongCardReport[] @relation("WrongCardOwner")
+  validatedWrongCards WrongCardReport[] @relation("WrongCardValidator")
+  callReports        CallReport[] @relation("CallReportOwner")
+  validatedCallReports CallReport[] @relation("CallReportValidator")
+  safetypayCodes     SafetypayCodeEntry[] @relation("SafetypayOwner")
+  commercialCardEntries CommercialCardEntry[]
+  attendanceRequests AttendanceChangeRequest[] @relation("AttendanceRequestRequester")
+  decidedAttendanceRequests AttendanceChangeRequest[] @relation("AttendanceRequestDecider")
+  sentPenaltyReports PenaltyReport[] @relation("PenaltyReportSender")
+  receivedPenaltyReports PenaltyReport[] @relation("PenaltyReportReceiver")
+  decidedPenaltyReports PenaltyReport[] @relation("PenaltyReportDecider")
+  decidedRatingApprovals RatingApproval[] @relation("RatingApprovalDecider")
+  monthlyClosuresClosed MonthlyClosure[] @relation("MonthlyClosureCloser")
+  monthlyClosuresReopened MonthlyClosure[] @relation("MonthlyClosureReopener")
+  changeLogs         ChangeLog[] @relation("ChangeLogActor")
+  turnosPortalGrants TurnosPortalGrant[]
+}
+
+model TurnosPortalGrant {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  consumedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+// Los equipos se identifican por DNI para poder unir usuarios, asistencia y
+// gestión sin depender de que el nombre cambie. Las calificaciones conservan
+// su vinculación actual por nombre de asesor.
+model WorkGroup {
+  id        Int               @id @default(autoincrement())
+  name      String            @unique
+  chiefDni  String?
+  members   WorkGroupMember[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model WorkGroupMember {
+  groupId Int
+  dni     String
+  group   WorkGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, dni])
+  @@unique([dni])
+}
+
+model ChangeLog {
+  id        Int      @id @default(autoincrement())
+  actorId   Int?
+  actor     User?    @relation("ChangeLogActor", fields: [actorId], references: [id], onDelete: SetNull)
+  module    String
+  action    String
+  summary   String
+  targetType String?
+  targetId  String?
+  sede      String?
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([module])
+  @@index([sede])
+  @@index([actorId])
+}
+
+model Record {
+  id               Int            @id @default(autoincrement())
+  userId           Int
+  user             User           @relation("RecordOwner", fields: [userId], references: [id], onDelete: Cascade)
+  historicalSede   String?
+  clientName       String
+  dni              String
+  type             RecordType
+  mode             RecordMode      @default(VIRTUAL)
+  registrationDate DateTime
+  operationDate    DateTime?
+  uploadPlatform   UploadPlatform
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  validatedAt      DateTime?
+  validatedById    Int?
+  validatedBy      User?          @relation("RecordValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  rejectedAt       DateTime?
+  rejectionReason  String?
+}
+
+model AppSettings {
+  id                  Int      @id @default(1)
+  commissionPerRecord Float    @default(0.40)
+  safetypayMonthlyGoal Float   @default(750000)
+  safetypaySedeGoals Json?
+  safetypayGoalHistory Json?
+  payoutSettings Json?
+  ratingRequiredFields Json?
+  ratingSheetLastSyncedAt DateTime?
+  updatedAt           DateTime @updatedAt
+}
+
+// Copia inmutable de cada respuesta recibida desde el formulario.  La clave
+// representa la respuesta (no solamente el DNI), por lo que una persona puede
+// dejar encuestas distintas en días diferentes sin que se dupliquen ni mezclen.
+model RatingSnapshot {
+  id                    Int      @id @default(autoincrement())
+  responseKey           String   @unique
+  sourceRowNumber       Int
+  sourceDate            String
+  rawDate               String
+  rawSede               String
+  sede                  String
+  advisor               String
+  matchedUserId         Int?
+  matchedUserName       String
+  rating                Float
+  dni                   String?
+  comment               String?
+  nps                   String?
+  valuableAspects       String?
+  externalApprovalStatus RatingApprovalStatus?
+  externalApprovalBy    String?
+  externalApprovalAt    String?
+  importedAt            DateTime @default(now())
+
+  @@index([sourceDate])
+  @@index([sede])
+  @@index([matchedUserId])
+}
+
+model RatingApproval {
+  id             Int                  @id @default(autoincrement())
+  rowKey         String               @unique
+  rowNumber      Int
+  advisor        String
+  matchedUserId  Int?
+  matchedUserName String
+  sede           String
+  rating         Float
+  dni            String?
+  comment        String?
+  status         RatingApprovalStatus @default(PENDING)
+  decidedById    Int?
+  decidedBy      User?                @relation("RatingApprovalDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt      DateTime?
+  decisionReason String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([status])
+  @@index([sede])
+  @@index([matchedUserId])
+}
+
+model Referral {
+  id                 Int          @id @default(autoincrement())
+  userId             Int
+  user               User         @relation("ReferralOwner", fields: [userId], references: [id], onDelete: Cascade)
+  historicalSede     String?
+  clientName         String
+  dni                String
+  amount             Float
+  bank               ReferralBank
+  bankCommission     Float
+  referralCommission Float
+  notes              String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  validatedAt        DateTime?
+  validatedById      Int?
+  validatedBy        User?        @relation("ReferralValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  rejectedAt         DateTime?
+  rejectionReason    String?
+
+  @@index([dni])
+  @@index([userId])
+}
+
+model AttendanceStore {
+  id         Int      @id @default(1)
+  sourceFile String   @default("")
+  sheetName  String   @default("")
+  importedAt DateTime?
+  payload    Json
+  updatedAt  DateTime @updatedAt
+}
+
+model AttendanceOverride {
+  id             Int      @id @default(autoincrement())
+  personId       String
+  date           String
+  entryTime      String?
+  exitTime       String?
+  justifiedEntry Boolean  @default(false)
+  justifiedExit  Boolean  @default(false)
+  justifiedDay   Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([personId, date])
+}
+
+model AttendanceProfile {
+  id             Int            @id @default(autoincrement())
+  personId       String         @unique
+  personName     String
+  department     String
+  payrollRole    String
+  monthlySalary  Float          @default(0)
+  penaltyPerMinute Float?
+  bonusAmount    Float?
+  bonusDisabled  Boolean        @default(false)
+  bonusDisabledReason String?
+  extraBonuses   Json?
+  salaryPaidMonth String?
+  salaryPaidAt   DateTime?
+  employmentType EmploymentType @default(FULL_TIME)
+  partTimeMode   PartTimeMode?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model AttendanceChangeRequest {
+  id             Int                     @id @default(autoincrement())
+  personId       String
+  personName     String
+  department     String
+  date           String
+  currentEntry   String?
+  currentExit    String?
+  requestedEntry String?
+  requestedExit  String?
+  justifiedEntry Boolean                 @default(false)
+  justifiedExit  Boolean                 @default(false)
+  justifiedDay   Boolean                 @default(false)
+  reason         String
+  status         AttendanceRequestStatus @default(PENDING)
+  requestedById  Int
+  requestedBy    User                    @relation("AttendanceRequestRequester", fields: [requestedById], references: [id], onDelete: Cascade)
+  decidedById    Int?
+  decidedBy      User?                   @relation("AttendanceRequestDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt      DateTime?
+  decisionReason String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+
+  @@index([status])
+  @@index([personId, date])
+}
+
+model PenaltyReport {
+  id               Int                 @id @default(autoincrement())
+  clientDni        String
+  clientName       String
+  workerUserId     Int?
+  workerName       String
+  workerSede       String
+  targetSede       String
+  penaltyCode      String
+  penaltyLabel     String
+  penaltyAmount    Float
+  category         String              @default("CUSTOMER_SERVICE")
+  evidenceImage    String?
+  managerPenaltyAmount Float           @default(0)
+  reporterBonusAmount  Float           @default(0)
+  reason           String
+  status           PenaltyReportStatus @default(PENDING)
+  sentById         Int
+  sentBy           User                @relation("PenaltyReportSender", fields: [sentById], references: [id], onDelete: Cascade)
+  receiverId       Int?
+  receiver         User?               @relation("PenaltyReportReceiver", fields: [receiverId], references: [id], onDelete: SetNull)
+  decidedById      Int?
+  decidedBy        User?               @relation("PenaltyReportDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt        DateTime?
+  decisionReason   String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([status])
+  @@index([targetSede])
+  @@index([sentById])
+  @@index([workerUserId])
+}
+
+model WrongCardReport {
+  id              Int             @id @default(autoincrement())
+  userId          Int
+  user            User            @relation("WrongCardOwner", fields: [userId], references: [id], onDelete: Cascade)
+  historicalSede  String?
+  clientDni       String
+  clientName      String
+  detectedDate    DateTime
+  notes           String?
+  status          WrongCardStatus @default(PENDING)
+  validatedAt     DateTime?
+  validatedById   Int?
+  validatedBy     User?           @relation("WrongCardValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  rejectedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([detectedDate])
+}
+
+model CallReport {
+  id              Int              @id @default(autoincrement())
+  userId          Int
+  user            User             @relation("CallReportOwner", fields: [userId], references: [id], onDelete: Cascade)
+  historicalSede  String?
+  clientDni       String
+  clientName      String
+  status          CallReportStatus @default(PENDING)
+  validatedAt     DateTime?
+  validatedById   Int?
+  validatedBy     User?            @relation("CallReportValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  rejectedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model SafetypayCodeEntry {
+  id              Int            @id @default(autoincrement())
+  userId          Int
+  user            User           @relation("SafetypayOwner", fields: [userId], references: [id], onDelete: Cascade)
+  historicalSede  String?
+  clientDni       String
+  cardLast4       String
+  customerCode    String         @default("")
+  bank            SafetypayBank
+  code            SafetypayCode
+  amount          Float
+  operationNumber String
+  paymentStatus   String         @default("PENDING")
+  paidAt          DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([paymentStatus])
+  @@index([bank])
+  @@index([code])
+  @@index([customerCode])
+  @@index([operationNumber])
+}
+
+model CommercialCardEntry {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  historicalSede     String?
+  originCompany      String
+  posProvider        String
+  cardNumber         String
+  entity             String
+  clientDni          String
+  cellphone          String
+  lastName           String
+  firstName          String
+  operationDate      DateTime
+  gestor             String
+  operationHour      String   @default("9AM")
+  code               String   @default("ALTOQUE1")
+  email              String
+  amount             Float
+  commissionRate     Float    @default(0.08)
+  destinationBank    String
+  destinationCompany String
+  commissionAmount   Float
+  depositAmount      Float
+  operationNumber    String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+  @@index([operationDate])
+  @@index([gestor])
+  @@index([destinationBank])
+}
+
+model MonthlyClosure {
+  id            Int      @id @default(autoincrement())
+  month         String   @unique
+  status        String   @default("CLOSED")
+  summary       Json
+  details       Json
+  pending       Json
+  closedById    Int?
+  closedBy      User?    @relation("MonthlyClosureCloser", fields: [closedById], references: [id], onDelete: SetNull)
+  closedAt      DateTime @default(now())
+  reopenedById  Int?
+  reopenedBy    User?    @relation("MonthlyClosureReopener", fields: [reopenedById], references: [id], onDelete: SetNull)
+  reopenedAt    DateTime?
+  reopenReason  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

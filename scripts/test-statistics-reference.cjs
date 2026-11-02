@@ -1,0 +1,22 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),ts=require('typescript');
+const source=ts.createSourceFile('presentation.js',fs.readFileSync('public/faithful-layout.js','utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.JS),names=['fxIsApprovedOperation','fxChart','fxStatisticsModel','fxStatsFilteredRows','fxStatsExportCsv','fxBranchChartSvg','fxStatsRatingsMarkup'];
+const ctx={Map,Set,Number,Math,recordAccountingMonthKey:r=>r.month,getItemSede:r=>r.sede,userSede:u=>u.sede,monthKeyFromDate:v=>String(v||'').slice(0,7),normalizePersonName:v=>String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),esc:v=>String(v).replace(/[&<>]/g,'')};vm.createContext(ctx);vm.runInContext(source.statements.filter(node=>ts.isFunctionDeclaration(node)&&names.includes(node.name?.text)).map(node=>node.getText(source)).join('\n'),ctx);
+const users=[{id:1,name:'Álvaro',username:'alvaro',role:'employee',sede:'Lince'},{id:2,name:'Beatriz',role:'manager',sede:'Norte'},{id:3,name:'Carlos',role:'employee',sede:'Lince'},{id:99,name:'Admin',role:'admin',sede:'Lince'}];
+const records=[{userId:1,month:'2026-10',sede:'Lince',tipo:'operacion',validatedAt:'yes'},{userId:1,month:'2026-10',sede:'Lince'},{userId:2,month:'2026-10',sede:'Norte',tipo:'operacion',validatedAt:'yes'},{userId:2,month:'2026-10',sede:'Norte',tipo:'operacion',validatedAt:'yes',rejectedAt:'yes'},{userId:1,month:'2026-09',sede:'Lince',tipo:'operacion',validatedAt:'yes'}],ratings=[{matchedUserId:1,date:'2026-10-01',rating:5},{matchedUserId:1,date:'2026-10-02',rating:3},{matchedUserId:1,date:'2026-09-01',rating:1}];
+const commission=u=>({1:37.8,2:10,3:0}[u.id]||0),model=ctx.fxStatisticsModel(records,users,ratings,'2026-10','',commission);
+assert.equal(model.totalRecords,4);assert.equal(model.operations,2);assert.equal(model.conversion,50);assert.equal(model.commissions,47.8);assert.equal(model.rows.length,3);assert.equal(model.rows[0].rating,4);assert.equal(model.rows[1].rating,null);assert.equal(model.branches.find(b=>b.name==='Lince').records,2);assert.equal(model.branches.find(b=>b.name==='Lince').operations,1);
+const north=ctx.fxStatisticsModel(records,users,ratings,'2026-10','Norte',commission);assert.equal(north.rows.length,1);assert.equal(north.branches.length,1);assert.equal(north.commissions,10);assert.equal(north.conversion,50);
+assert.equal(ctx.fxStatsFilteredRows(model.rows,'alvaro','','records','desc')[0].name,'Álvaro');assert.equal(ctx.fxStatsFilteredRows(model.rows,'','Norte').length,1);assert.equal(ctx.fxStatsFilteredRows(model.rows,'','','rating','asc')[0].name,'Álvaro');
+const svg=ctx.fxBranchChartSvg(model.branches,700);assert.equal((svg.match(/data-series="records"/g)||[]).length,2);assert.equal((svg.match(/data-series="operations"/g)||[]).length,2);assert(!ctx.fxBranchChartSvg([],320).includes('NaN'));assert(ctx.fxStatsRatingsMarkup(model.rows[0]).includes('4.0 de 5'));assert(ctx.fxStatsRatingsMarkup(model.rows[1]).includes('Sin calificaciones'));
+const csv=ctx.fxStatsExportCsv([{...model.rows[0],name:'=HYPERLINK("x")'}]);assert(csv.startsWith('\uFEFF'));assert(csv.includes('Conversión (%)'));assert(csv.includes("'=HYPERLINK"));assert(csv.includes('37.80'));
+console.log('PASS: correct seven-column statistics model, monthly/sede scope, conversion, approved-only counts, real rating averages, both chart series, accent search, sorting, and safe CSV export.');
+
+assert.equal(ctx.fxIsApprovedOperation({tipo:'registro',validatedAt:'yes'}),false);
+assert.equal(ctx.fxIsApprovedOperation({tipo:'operacion'}),false);
+assert.equal(ctx.fxIsApprovedOperation({type:'OPERACION',validatedAt:'yes'}),true);
+assert.equal(ctx.fxIsApprovedOperation({tipo:'operacion',validatedAt:'yes',rejectedAt:'yes'}),false);
+const mixed=ctx.fxStatisticsModel([...records,{userId:1,month:'2026-10',sede:'Lince',tipo:'registro',validatedAt:'yes'},{userId:1,month:'2026-10',sede:'Lince',tipo:'operacion'}],users,ratings,'2026-10','',commission);
+assert.equal(mixed.totalRecords,6);assert.equal(mixed.operations,2);assert.equal(mixed.rows[0].operations,1);
+const chart=ctx.fxChart([{fecha:'2026-10-05',tipo:'registro',validatedAt:'yes'},{fecha:'2026-10-05',tipo:'operacion',validatedAt:'yes'},{fecha:'2026-10-05',tipo:'operacion'}],'2026-10',700,'day',false);
+assert(chart.includes('data-chart-date="05/10/2026" data-chart-records="3" data-chart-approved="1"'));
+console.log('PASS: validated registrations and unapproved/rejected operations are excluded consistently from operation metrics and chart tooltips.');
